@@ -21,8 +21,8 @@ import jsfas.common.exception.InvalidParameterException;
 import jsfas.common.json.CommonJson;
 import jsfas.common.utils.GeneralUtil;
 import jsfas.db.jssv.persistence.service.OAuth2RestService;
-import jsfas.db.main.persistence.domain.ElInpostStaffImpVDAO;
-import jsfas.db.main.persistence.repository.ElInpostStaffImpVRepository;
+// import jsfas.db.main.persistence.domain.ElInpostStaffImpVDAO;
+// import jsfas.db.main.persistence.repository.ElInpostStaffImpVRepository;
 import jsfas.db.rbac.persistence.repository.UserRoleGroupRepository;
 import jsfas.redis.domain.Token;
 import jsfas.security.SecurityUtils;
@@ -38,8 +38,8 @@ public class AuthEventHandler implements AuthService {
 	@Autowired
 	RedisService redisService;
 	
-	@Autowired
-	ElInpostStaffImpVRepository elInpostStaffImpVRepository;
+	// @Autowired
+	// ElInpostStaffImpVRepository elInpostStaffImpVRepository;
 	
 	@Autowired
 	UserRoleGroupRepository userRoleGroupRepository;
@@ -127,7 +127,8 @@ public class AuthEventHandler implements AuthService {
 			log.info("staff found from api:{}", staffFound);
 			// 2nd call if API hv error or incorrect result
 			if (!staffFound) {
-				List<ElInpostStaffImpVDAO> elInpostStaffImpVDAOList = elInpostStaffImpVRepository.findByUserNam(username);
+				// List<ElInpostStaffImpVDAO> elInpostStaffImpVDAOList = elInpostStaffImpVRepository.findByUserNam(username);
+				List<String> elInpostStaffImpVDAOList = new ArrayList<String>();
 				log.debug("elInpostStaffImpVDAOList.size() {}", elInpostStaffImpVDAOList.size());
 				if(elInpostStaffImpVDAOList.size() == 0) {
 					return null;

@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "EL_FUNC_PAGES_TAB")
+@Table(name = "FAS_FUNC_PAGES_TAB")
 public class FunctionPageDAO implements Serializable {
 
 	/**

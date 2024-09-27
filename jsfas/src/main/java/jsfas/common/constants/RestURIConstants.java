@@ -12,31 +12,31 @@ public class RestURIConstants {
 	//--------------------------------------------------------------------------
 	public static final String INDEX = "/"; //index mapping
 	public static final String LOGOUT = "/web/logout";
-	public static final String ADMIN_MENU = "/el_admin"; //admin menu
+	public static final String ADMIN_MENU = "/fas_admin"; //admin menu
 	
 	// API
-    public static final String EXE_RBAC_CMD_LIST = "/el_exe_rbac_cmd_list";
-    public static final String GET_RBAC_USER_INFO = "/el_get_rbac_user_info";
-	public static final String GET_RBAC_USER_ROLE_GRP = "/el_get_rbac_user_role_grp";
-	public static final String GET_RBAC_ENTITY_REL = "/el_get_rbac_entity_rel";
-    public static final String GET_RBAC_ROLE_GRP_PERM = "/el_get_rbac_role_grp_perm";
-    public static final String GET_RBAC_USERS_BY_PARAM_FUZZY = "/el_get_rbac_users_by_param_fuzzy";
-    public static final String CHK_RBAC_USER_NAME = "/el_chk_rbac_user_name";
+    public static final String EXE_RBAC_CMD_LIST = "/fas_exe_rbac_cmd_list";
+    public static final String GET_RBAC_USER_INFO = "/fas_get_rbac_user_info";
+	public static final String GET_RBAC_USER_ROLE_GRP = "/fas_get_rbac_user_role_grp";
+	public static final String GET_RBAC_ENTITY_REL = "/fas_get_rbac_entity_rel";
+    public static final String GET_RBAC_ROLE_GRP_PERM = "/fas_get_rbac_role_grp_perm";
+    public static final String GET_RBAC_USERS_BY_PARAM_FUZZY = "/fas_get_rbac_users_by_param_fuzzy";
+    public static final String CHK_RBAC_USER_NAME = "/fas_chk_rbac_user_name";
     
 	//--------------------------------------------------------------------------
 	//------------------------------SCHEDULER-----------------------------------
 	//--------------------------------------------------------------------------
-    public static final String SCHEDULER_PAGE = "el_scheduler";
+    public static final String SCHEDULER_PAGE = "fas_scheduler";
 	public static final String SCHEDULER_PATH = "/" + SCHEDULER_PAGE;
-	public static final String GET_SCHEDULER_JOB_LIST = "/el_get_scheduler_job_list";
-	public static final String RESUME_SCHEDULER_TRIGGER = "/el_resume_scheduler_trigger";
-	public static final String RESUME_SCHEDULER_ALL_TRIGGER = "/el_resume_scheduler_all_trigger";
-	public static final String PAUSE_SCHEDULER_TRIGGER = "/el_pause_scheduler_trigger";
-	public static final String PAUSE_SCHEDULER_ALL_TRIGGER = "/el_pause_scheduler_all_trigger";
-	public static final String ADD_SCHEDULER_TRIGGER = "/el_add_scheduler_trigger";
-	public static final String CHG_SCHEDULER_TRIGGER = "/el_chg_scheduler_trigger";
-	public static final String REM_SCHEDULER_TRIGGER = "/el_rem_scheduler_trigger";
-	public static final String GET_SCHEDULE_JOB_INFO_LIST = "/el_get_scheduler_job_info_list";
+	public static final String GET_SCHEDULER_JOB_LIST = "/fas_get_scheduler_job_list";
+	public static final String RESUME_SCHEDULER_TRIGGER = "/fas_resume_scheduler_trigger";
+	public static final String RESUME_SCHEDULER_ALL_TRIGGER = "/fas_resume_scheduler_all_trigger";
+	public static final String PAUSE_SCHEDULER_TRIGGER = "/fas_pause_scheduler_trigger";
+	public static final String PAUSE_SCHEDULER_ALL_TRIGGER = "/fas_pause_scheduler_all_trigger";
+	public static final String ADD_SCHEDULER_TRIGGER = "/fas_add_scheduler_trigger";
+	public static final String CHG_SCHEDULER_TRIGGER = "/fas_chg_scheduler_trigger";
+	public static final String REM_SCHEDULER_TRIGGER = "/fas_rem_scheduler_trigger";
+	public static final String GET_SCHEDULE_JOB_INFO_LIST = "/fas_get_scheduler_job_info_list";
 	
 	
 	// Authorization

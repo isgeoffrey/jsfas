@@ -16,7 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "EL_FUNC_CATG_TAB")
+@Table(name = "FAS_FUNC_CATG_TAB")
 public class FunctionCatalogDAO implements Serializable, Comparable<FunctionCatalogDAO> {
 
 	/**

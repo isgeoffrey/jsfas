@@ -26,7 +26,7 @@ import jsfas.db.rbac.persistence.domain.UserRoleGroupDAO;
 import jsfas.web.serializer.CustomTimestampSerializer;
 
 @Entity
-@Table(name = "EL_USER_PROFILE_HDR")
+@Table(name = "FAS_USER_PROFILE_HDR")
 @DynamicUpdate
 @NamedStoredProcedureQueries({
 	@NamedStoredProcedureQuery(name = "set_user_nam", 

@@ -19,7 +19,7 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
-@Table(name = "EL_SYS_CATG_TAB")
+@Table(name = "FAS_SYS_CATG_TAB")
 public class SystemCatalogDAO implements Serializable, Comparable<SystemCatalogDAO> {
 	/**
 	 * 

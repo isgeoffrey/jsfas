@@ -12,7 +12,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
-@Table(name = "EL_USER_ROLE_GROUP")
+@Table(name = "FAS_USER_ROLE_GROUP")
 @DynamicUpdate
 public class UserRoleGroupDAO implements Serializable, Comparable<UserRoleGroupDAO> {
 

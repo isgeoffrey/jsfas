@@ -9,7 +9,7 @@ import jsfas.db.main.persistence.domain.SystemCatalogDAO;
 
 public interface SystemCatalogRepository extends JpaRepository<SystemCatalogDAO, String> {
 
-	@Query(value = "SELECT * FROM EL_SYS_CATG_TAB ", nativeQuery = true)
+	@Query(value = "SELECT * FROM FAS_SYS_CATG_TAB ", nativeQuery = true)
 	List<SystemCatalogDAO> findByMenuGen();
 	
 }

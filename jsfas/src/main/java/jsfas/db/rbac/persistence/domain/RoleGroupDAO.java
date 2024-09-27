@@ -24,7 +24,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 @Entity
-@Table(name = "EL_ROLE_GROUP")
+@Table(name = "FAS_ROLE_GROUP")
 @DynamicUpdate
 public class RoleGroupDAO implements Serializable, Comparable<RoleGroupDAO> {
 
@@ -35,7 +35,7 @@ public class RoleGroupDAO implements Serializable, Comparable<RoleGroupDAO> {
     
     @Id
     @GenericGenerator(name = "roleGroupSeq", strategy = "jsfas.common.StringSeqGenerator", parameters = {
-            @Parameter(name = "sequence_name", value = "EL_ROLE_GROUP_SEQ"),
+            @Parameter(name = "sequence_name", value = "FAS_ROLE_GROUP_SEQ"),
             @Parameter(name = "leftPadSize", value = "6"),
             @Parameter(name = "includeModCtrlTxtPrefix", value = "true")
     })

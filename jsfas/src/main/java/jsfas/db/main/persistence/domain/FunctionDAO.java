@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
-@Table(name = "EL_FUNC_TAB")
+@Table(name = "FAS_FUNC_TAB")
 public class FunctionDAO implements Serializable, Comparable<FunctionDAO> {
 
 	/**

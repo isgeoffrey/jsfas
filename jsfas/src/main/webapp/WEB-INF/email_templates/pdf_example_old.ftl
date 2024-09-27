@@ -46,7 +46,7 @@
 </tr>
 <tr >
 <td class="tableContent">
-<p>${EL_TYPE_NAM!""}</p>
+<p>${FAS_TYPE_NAM!""}</p>
 </td>
 <td class="tableContent">
 <span>${ACAD_PLAN_DESCR!""}</span>
@@ -64,7 +64,7 @@
 <tr>
 <td colspan="5" class="descrCell">
 <span><b><u>Details: </u></b></span><br/>
-${EL_TYPE_DESCR!""}
+${FAS_TYPE_DESCR!""}
 <#-- <ul>
 <li>Administering and coordinating academic programs, such as designing curricula and teaching classes</li>
 <li>Reviewing student records to ensure compliance with school policies. procedures. and standards</li>

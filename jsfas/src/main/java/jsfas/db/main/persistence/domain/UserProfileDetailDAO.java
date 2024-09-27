@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "EL_USER_PROFILE_DTL")
+@Table(name = "FAS_USER_PROFILE_DTL")
 public class UserProfileDetailDAO implements Serializable {
 
 	/**

@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "EL_MSG_TAB")
+@Table(name = "FAS_MSG_TAB")
 public class MessageTableDAO implements Serializable {
 
 	/**

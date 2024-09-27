@@ -17,7 +17,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
-@Table(name = "EL_ACTION")
+@Table(name = "FAS_ACTION")
 @DynamicUpdate
 public class ActionDAO implements Serializable, Comparable<ActionDAO> {
 

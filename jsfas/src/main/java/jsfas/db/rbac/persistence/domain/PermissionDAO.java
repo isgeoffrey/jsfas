@@ -19,7 +19,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import jsfas.common.utils.GeneralUtil;
 
 @Entity
-@Table(name = "EL_PERMISSION")
+@Table(name = "FAS_PERMISSION")
 @DynamicUpdate
 public class PermissionDAO implements Serializable, Comparable<PermissionDAO> {
 

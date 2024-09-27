@@ -28,8 +28,8 @@ public interface UserRoleGroupRepository extends CommonRepository<UserRoleGroupD
     List<UserRoleGroupDAO> findByRoleGroupId(@Param("roleGroupId") String roleGroupId, Sort sort);
 
     @Query(value = ""
-    		+ "SELECT distinct user_nam FROM EL_USER_ROLE_GROUP urg  "
-    		+ "INNER JOIN EL_ROLE_GROUP rg ON urg.role_group_id = rg.role_group_id "
+    		+ "SELECT distinct user_nam FROM FAS_USER_ROLE_GROUP urg  "
+    		+ "INNER JOIN FAS_ROLE_GROUP rg ON urg.role_group_id = rg.role_group_id "
     		+ "where UPPER(role_group_desc) = UPPER(:role_group_desc) ", nativeQuery = true)
     List<String> findByRoleGroupDesc(@Param("role_group_desc") String role_group_desc);
 }

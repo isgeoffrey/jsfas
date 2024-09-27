@@ -19,9 +19,9 @@ import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import jsfas.common.constants.AppConstants;
-import jsfas.scheduler.job.BatchApprovalDailyEmailProc;
-import jsfas.scheduler.job.PayrollToHrmsProc;
-import jsfas.scheduler.job.PostBrPostProc;
+// import jsfas.scheduler.job.BatchApprovalDailyEmailProc;
+// import jsfas.scheduler.job.PayrollToHrmsProc;
+// import jsfas.scheduler.job.PostBrPostProc;
 import jsfas.scheduler.job.RbacBatchJob;
 import jsfas.scheduler.job.SendEmNotifProc;
 
@@ -107,79 +107,79 @@ public class QuartzConfiguration {
     }
     
     // Payment interface to HRMS job
-    @Bean
-    public JobDetailFactoryBean payrollToHrmsProcDetailFactoryBean() {
-        JobDetailFactoryBean jobDetail = new JobDetailFactoryBean();
+    // @Bean
+    // public JobDetailFactoryBean payrollToHrmsProcDetailFactoryBean() {
+    //     JobDetailFactoryBean jobDetail = new JobDetailFactoryBean();
         
-        //assign the job class
-        jobDetail.setJobClass(PayrollToHrmsProc.class);
+    //     //assign the job class
+    //     jobDetail.setJobClass(PayrollToHrmsProc.class);
         
-        jobDetail.setGroup("IntergraionProcessGroup");        // the job group name
-        jobDetail.setName("PayrollToHrmsProc");              // the job name
-        jobDetail.setDurability(true);
-        return jobDetail;
-    }
+    //     jobDetail.setGroup("IntergraionProcessGroup");        // the job group name
+    //     jobDetail.setName("PayrollToHrmsProc");              // the job name
+    //     jobDetail.setDurability(true);
+    //     return jobDetail;
+    // }
     
     //setting the job trigger
-    @Bean
-    public CronTriggerFactoryBean payrollToHrmsProcTriggerFactoryBean() {
-        CronTriggerFactoryBean cronTigger = new CronTriggerFactoryBean();
-        cronTigger.setJobDetail(payrollToHrmsProcDetailFactoryBean().getObject());
-        cronTigger.setGroup("IntergraionTriggerGroup");           //the trigger group name
-        cronTigger.setName("IntergraionTrigger");                 //the trigger name
-        cronTigger.setCronExpression("0 0 1 ? * * *");            //the cron expression, which will be override by the setting in database if any
-        return cronTigger;
-    }
+    // @Bean
+    // public CronTriggerFactoryBean payrollToHrmsProcTriggerFactoryBean() {
+    //     CronTriggerFactoryBean cronTigger = new CronTriggerFactoryBean();
+    //     cronTigger.setJobDetail(payrollToHrmsProcDetailFactoryBean().getObject());
+    //     cronTigger.setGroup("IntergraionTriggerGroup");           //the trigger group name
+    //     cronTigger.setName("IntergraionTrigger");                 //the trigger name
+    //     cronTigger.setCronExpression("0 0 1 ? * * *");            //the cron expression, which will be override by the setting in database if any
+    //     return cronTigger;
+    // }
     
     // Post Br Post Proc job
-    @Bean
-    public JobDetailFactoryBean postBrPostProcDetailFactoryBean() {
-        JobDetailFactoryBean jobDetail = new JobDetailFactoryBean();
+    // @Bean
+    // public JobDetailFactoryBean postBrPostProcDetailFactoryBean() {
+    //     JobDetailFactoryBean jobDetail = new JobDetailFactoryBean();
         
-        //assign the job class
-        jobDetail.setJobClass(PostBrPostProc.class);
+    //     //assign the job class
+    //     jobDetail.setJobClass(PostBrPostProc.class);
         
-        jobDetail.setGroup("PostBrPostProcProcessGroup");        // the job group name
-        jobDetail.setName("PostBrPostProc");              // the job name
-        jobDetail.setDurability(true);
-        return jobDetail;
-    }
+    //     jobDetail.setGroup("PostBrPostProcProcessGroup");        // the job group name
+    //     jobDetail.setName("PostBrPostProc");              // the job name
+    //     jobDetail.setDurability(true);
+    //     return jobDetail;
+    // }
     
     //setting the job trigger
-    @Bean
-    public CronTriggerFactoryBean postBrPostProcTriggerFactoryBean() {
-        CronTriggerFactoryBean cronTigger = new CronTriggerFactoryBean();
-        cronTigger.setJobDetail(postBrPostProcDetailFactoryBean().getObject());
-        cronTigger.setGroup("PostBrPostProcTriggerGroup");           //the trigger group name
-        cronTigger.setName("PostBrPostProcTrigger");                 //the trigger name
-        cronTigger.setCronExpression("0 0 2 ? * * *");            //the cron expression, which will be override by the setting in database if any
-        return cronTigger;
-    }
+    // @Bean
+    // public CronTriggerFactoryBean postBrPostProcTriggerFactoryBean() {
+    //     CronTriggerFactoryBean cronTigger = new CronTriggerFactoryBean();
+    //     cronTigger.setJobDetail(postBrPostProcDetailFactoryBean().getObject());
+    //     cronTigger.setGroup("PostBrPostProcTriggerGroup");           //the trigger group name
+    //     cronTigger.setName("PostBrPostProcTrigger");                 //the trigger name
+    //     cronTigger.setCronExpression("0 0 2 ? * * *");            //the cron expression, which will be override by the setting in database if any
+    //     return cronTigger;
+    // }
     
     // Batch Approval Daily Email job
-    @Bean
-    public JobDetailFactoryBean batchApprovalDailyEmailProcDetailFactoryBean() {
-        JobDetailFactoryBean jobDetail = new JobDetailFactoryBean();
+    // @Bean
+    // public JobDetailFactoryBean batchApprovalDailyEmailProcDetailFactoryBean() {
+    //     JobDetailFactoryBean jobDetail = new JobDetailFactoryBean();
         
-        //assign the job class
-        jobDetail.setJobClass(BatchApprovalDailyEmailProc.class);
+    //     //assign the job class
+    //     jobDetail.setJobClass(BatchApprovalDailyEmailProc.class);
         
-        jobDetail.setGroup("BatchApprovalDailyEmailProcessGroup");        // the job group name
-        jobDetail.setName("BatchApprovalDailyEmailProc");              // the job name
-        jobDetail.setDurability(true);
-        return jobDetail;
-    }
+    //     jobDetail.setGroup("BatchApprovalDailyEmailProcessGroup");        // the job group name
+    //     jobDetail.setName("BatchApprovalDailyEmailProc");              // the job name
+    //     jobDetail.setDurability(true);
+    //     return jobDetail;
+    // }
     
     //setting the job trigger
-    @Bean
-    public CronTriggerFactoryBean batchApprovalDailyEmailProcTriggerFactoryBean() {
-        CronTriggerFactoryBean cronTigger = new CronTriggerFactoryBean();
-        cronTigger.setJobDetail(batchApprovalDailyEmailProcDetailFactoryBean().getObject());
-        cronTigger.setGroup("BatchApprovalDailyEmailTriggerGroup");           //the trigger group name
-        cronTigger.setName("BatchApprovalDailyEmailTrigger");                 //the trigger name
-        cronTigger.setCronExpression("0 0 3 ? * * *");            //the cron expression, which will be override by the setting in database if any
-        return cronTigger;
-    }
+    // @Bean
+    // public CronTriggerFactoryBean batchApprovalDailyEmailProcTriggerFactoryBean() {
+    //     CronTriggerFactoryBean cronTigger = new CronTriggerFactoryBean();
+    //     cronTigger.setJobDetail(batchApprovalDailyEmailProcDetailFactoryBean().getObject());
+    //     cronTigger.setGroup("BatchApprovalDailyEmailTriggerGroup");           //the trigger group name
+    //     cronTigger.setName("BatchApprovalDailyEmailTrigger");                 //the trigger name
+    //     cronTigger.setCronExpression("0 0 3 ? * * *");            //the cron expression, which will be override by the setting in database if any
+    //     return cronTigger;
+    // }
     
 	@Bean
 	@Autowired

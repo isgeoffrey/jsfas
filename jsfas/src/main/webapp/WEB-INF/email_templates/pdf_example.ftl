@@ -46,7 +46,7 @@
 </tr>
 <tr >
 <td class="tableContent">
-<p>${EL_TYPE_NAM!""}<#if EL_TYPE_DESCR != " " && EL_TYPE_DESCR != EL_TYPE_NAM>: ${EL_TYPE_DESCR}</#if></p>
+<p>${FAS_TYPE_NAM!""}<#if FAS_TYPE_DESCR != " " && FAS_TYPE_DESCR != FAS_TYPE_NAM>: ${FAS_TYPE_DESCR}</#if></p>
 </td>
 <td class="tableContent">
 <span>${ACAD_PLAN_DESCR!""}</span>

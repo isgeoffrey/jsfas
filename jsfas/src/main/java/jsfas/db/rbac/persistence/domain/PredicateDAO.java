@@ -19,7 +19,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
-@Table(name = "EL_PREDICATE")
+@Table(name = "FAS_PREDICATE")
 @DynamicUpdate
 public class PredicateDAO implements Serializable, Comparable<PredicateDAO> {
 

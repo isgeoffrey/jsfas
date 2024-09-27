@@ -11,22 +11,22 @@ import jsfas.db.main.persistence.service.CommonRoutineEventHandler;
 import jsfas.db.main.persistence.service.CommonRoutineService;
 import jsfas.db.main.persistence.service.EmailNotificationEventHandler;
 import jsfas.db.main.persistence.service.EmailNotificationService;
-import jsfas.db.main.persistence.service.ExtraLoadApplicationEventHandler;
-import jsfas.db.main.persistence.service.ExtraLoadApplicationService;
-import jsfas.db.main.persistence.service.ExtraLoadPaymentEventHandler;
-import jsfas.db.main.persistence.service.ExtraLoadPaymentService;
-import jsfas.db.main.persistence.service.ExtraLoadTypeEventHandler;
-import jsfas.db.main.persistence.service.ExtraLoadTypeService;
+// import jsfas.db.main.persistence.service.ExtraLoadApplicationEventHandler;
+// import jsfas.db.main.persistence.service.ExtraLoadApplicationService;
+// import jsfas.db.main.persistence.service.ExtraLoadPaymentEventHandler;
+// import jsfas.db.main.persistence.service.ExtraLoadPaymentService;
+// import jsfas.db.main.persistence.service.ExtraLoadTypeEventHandler;
+// import jsfas.db.main.persistence.service.ExtraLoadTypeService;
 import jsfas.db.main.persistence.service.FileEventHandler;
 import jsfas.db.main.persistence.service.FileService;
 import jsfas.db.main.persistence.service.GeneralApiEventHandler;
 import jsfas.db.main.persistence.service.GeneralApiService;
-import jsfas.db.main.persistence.service.LoaEventHandler;
-import jsfas.db.main.persistence.service.LoaService;
+// import jsfas.db.main.persistence.service.LoaEventHandler;
+// import jsfas.db.main.persistence.service.LoaService;
 import jsfas.db.main.persistence.service.RedisEventHandler;
 import jsfas.db.main.persistence.service.RedisService;
-import jsfas.db.main.persistence.service.ReportEventHandler;
-import jsfas.db.main.persistence.service.ReportService;
+// import jsfas.db.main.persistence.service.ReportEventHandler;
+// import jsfas.db.main.persistence.service.ReportService;
 import jsfas.db.main.persistence.service.SchedulerEventHandler;
 import jsfas.db.main.persistence.service.SchedulerService;
 import jsfas.db.main.persistence.service.UserProfileEventHandler;
@@ -111,45 +111,45 @@ public class CoreConfig {
         return new RbacCommandEventHandler();
     }
     
-    @Bean
-    public FileService fileService() {
-    	return new FileEventHandler();
-    }
+    // @Bean
+    // public FileService fileService() {
+    // 	return new FileEventHandler();
+    // }
     
-    @Bean
-    public ExtraLoadTypeService extraLoadTypeService() {
-    	return new ExtraLoadTypeEventHandler();
-    }
+    // @Bean
+    // public ExtraLoadTypeService extraLoadTypeService() {
+    // 	return new ExtraLoadTypeEventHandler();
+    // }
     
-    @Bean
-    public GeneralApiService gGeneralApiService() {
-    	return new GeneralApiEventHandler();
-    }
+    // @Bean
+    // public GeneralApiService gGeneralApiService() {
+    // 	return new GeneralApiEventHandler();
+    // }
     
-    @Bean
-    public ExtraLoadApplicationService extraLoadApplicationService() {
-    	return new ExtraLoadApplicationEventHandler();
-    }
+    // @Bean
+    // public ExtraLoadApplicationService extraLoadApplicationService() {
+    // 	return new ExtraLoadApplicationEventHandler();
+    // }
     
-    @Bean
-    public LoaService loaService() {
-    	return new LoaEventHandler();
-    }
+    // @Bean
+    // public LoaService loaService() {
+    // 	return new LoaEventHandler();
+    // }
     
-    @Bean
-    public ExtraLoadPaymentService extraLoadPaymentService() {
-    	return new ExtraLoadPaymentEventHandler();
-    }
+    // @Bean
+    // public ExtraLoadPaymentService extraLoadPaymentService() {
+    // 	return new ExtraLoadPaymentEventHandler();
+    // }
     
-    @Bean
-    public EmailNotificationService emailNotificationService() {
-    	return new EmailNotificationEventHandler();
-    }
+    // @Bean
+    // public EmailNotificationService emailNotificationService() {
+    // 	return new EmailNotificationEventHandler();
+    // }
     
-    @Bean
-    public ReportService reportService() {
-    	return new ReportEventHandler();
-    }
+    // @Bean
+    // public ReportService reportService() {
+    // 	return new ReportEventHandler();
+    // }
     
     @Bean
     public OAuth2RestService oAuth2RestService() {

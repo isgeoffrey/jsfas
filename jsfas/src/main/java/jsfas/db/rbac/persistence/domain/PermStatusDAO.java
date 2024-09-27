@@ -17,7 +17,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
-@Table(name = "EL_PERM_STATUS")
+@Table(name = "FAS_PERM_STATUS")
 @DynamicUpdate
 public class PermStatusDAO implements Serializable, Comparable<PermStatusDAO> {
 

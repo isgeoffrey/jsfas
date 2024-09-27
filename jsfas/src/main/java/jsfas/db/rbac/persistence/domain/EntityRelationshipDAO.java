@@ -16,7 +16,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
-@Table(name = "EL_ENTITY_RELATIONSHIP")
+@Table(name = "FAS_ENTITY_RELATIONSHIP")
 @DynamicUpdate
 public class EntityRelationshipDAO implements Serializable, Comparable<EntityRelationshipDAO> {
 

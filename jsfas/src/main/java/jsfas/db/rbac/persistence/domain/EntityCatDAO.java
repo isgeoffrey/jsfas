@@ -17,7 +17,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
-@Table(name = "EL_ENTITY_CAT")
+@Table(name = "FAS_ENTITY_CAT")
 @DynamicUpdate
 public class EntityCatDAO implements Serializable, Comparable<EntityCatDAO> {
 

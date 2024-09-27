@@ -111,7 +111,7 @@ public class AppConstants {
 	//application function code
 	public static final String RBAC_MAINT_FUNC_CDE = "AD04";
 	public static final String SCHEDULER_FUNC_CDE = "PDS03";
-	public static final String EL_TYPE_MAINT_FUNC_CDE = "AD03";
+	public static final String FAS_TYPE_MAINT_FUNC_CDE = "AD03";
 	public static final String ENQUIRE_APPL_FUNC_CDE = "AE01";
 	public static final String ENQUIRE_LOA_FUNC_CDE = "AE02";
 	public static final String REPORT_PAYMENT_STATUS_FUNC_CDE = "AE03";

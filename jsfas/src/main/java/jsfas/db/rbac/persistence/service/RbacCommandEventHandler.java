@@ -252,7 +252,7 @@ public class RbacCommandEventHandler implements RbacCommandService {
         switch(rbacCmdType) {
         case ADD_ROLE:
         case EDIT_ROLE:
-        case DEL_ROLE:
+        case DFAS_ROLE:
             if(!validateRoleCmdParams(rbacCmdType, cmdParams, roleNodeMap, currentUser, checkPermission)) {
                 log.error(String.format("Process incorrect rbac role cmd params=%s", cmdParams.toString()));
                 throw new InvalidParameterException();
@@ -261,7 +261,7 @@ public class RbacCommandEventHandler implements RbacCommandService {
             break;
         case ADD_USER:
         case EDIT_USER:
-        case DEL_USER:
+        case DFAS_USER:
             if(!validateUserCmdParams(rbacCmdType, cmdParams, roleNodeMap, currentUser, checkPermission)) {
                 log.error(String.format("Process incorrect rbac user cmd params=%s", cmdParams.toString()));
                 throw new InvalidParameterException();
@@ -335,7 +335,7 @@ public class RbacCommandEventHandler implements RbacCommandService {
                 roleNodeMap.put(nodeId, roleGroup);
             }
             break;
-        case DEL_ROLE:
+        case DFAS_ROLE:
             roleGroupRepository.delete(optionalRoleGroup.get());
             break;
         default:
@@ -390,7 +390,7 @@ public class RbacCommandEventHandler implements RbacCommandService {
                 validate = true;
             }
             break;
-        case DEL_ROLE:
+        case DFAS_ROLE:
             if(checkPermission) {
                 currentUser.checkPermission(String.format(env.getProperty(AppConstants.RBAC_PERM_FMT_STR), AppConstants.REM_ACTION_TYPE));
             }
@@ -496,7 +496,7 @@ public class RbacCommandEventHandler implements RbacCommandService {
             userRoleGroup.setOpPageName(opPageName);
             userProfileHeaderRepository.save(userProfileHeader);
             break;
-        case DEL_USER:
+        case DFAS_USER:
             userRoleGroupRepository.delete(optionalUserRoleGroup.get());
             break;
         default:
@@ -553,7 +553,7 @@ public class RbacCommandEventHandler implements RbacCommandService {
                 validate = true;
             }
             break;
-        case DEL_USER:
+        case DFAS_USER:
             if(checkPermission) {
                 currentUser.checkPermission(String.format(env.getProperty(AppConstants.RBAC_PERM_FMT_STR), AppConstants.REM_ACTION_TYPE));
             }

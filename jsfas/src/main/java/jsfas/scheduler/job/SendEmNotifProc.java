@@ -33,7 +33,7 @@ public class SendEmNotifProc extends QuartzJobBean {
 		
 		try {
 
-			emailNotificationService.sendPendingEmailNotification(jobUser, "el_notif_proc_job");
+			emailNotificationService.sendPendingEmailNotification(jobUser, "fas_notif_proc_job");
 			
 		} catch (Exception ex) {
 			boolean refireImmediately = false;

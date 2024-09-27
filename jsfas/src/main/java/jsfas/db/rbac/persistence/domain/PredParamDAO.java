@@ -25,7 +25,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 @Entity
-@Table(name = "EL_PRED_PARAM")
+@Table(name = "FAS_PRED_PARAM")
 @DynamicUpdate
 public class PredParamDAO implements Serializable, Comparable<PredParamDAO> {
 
@@ -36,7 +36,7 @@ public class PredParamDAO implements Serializable, Comparable<PredParamDAO> {
     
     @Id
     @GenericGenerator(name = "predParamSeq", strategy = "jsfas.common.StringSeqGenerator", parameters = {
-            @Parameter(name = "sequence_name", value = "EL_PRED_PARAM_SEQ"),
+            @Parameter(name = "sequence_name", value = "FAS_PRED_PARAM_SEQ"),
             @Parameter(name = "leftPadSize", value = "6"),
             @Parameter(name = "includeModCtrlTxtPrefix", value = "true")
     })
