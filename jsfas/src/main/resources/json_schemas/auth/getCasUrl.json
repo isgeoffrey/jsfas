@@ -1,0 +1,19 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"title": "GET /auth/cas/url",
+	"description": "Get cas url",
+	"type": "object",
+	"properties": {
+		"query": {
+			"properties": {
+				"path": { "type": "string" },
+				"appPath": { "type": "string" }
+			},
+			"required": [],
+			"additionalProperties": false
+		},
+		"body": {}
+	},
+	"required": [],
+	"additionalProperties": false
+}

@@ -1,0 +1,43 @@
+/**
+ * @author iswill
+ * @since 19/07/2016
+ */
+
+/* override for font 12px style */
+/*
+body {
+	font-size: 12px;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  margin: 2px 0 0;
+  margin-top: 1px;
+  line-height: normal;
+}
+
+.radio input[type="radio"],
+.radio-inline input[type="radio"]  {
+  position: absolute;
+  margin-top: 1px;
+  margin-left: -20px;
+}
+
+.checkbox input[type="checkbox"],
+.checkbox-inline input[type="checkbox"] {
+  position: absolute;
+  margin-top: 2px;
+  margin-left: -20px;
+}
+*/
+/* override for font 12px style */
+
+.rbac-dept-listbox {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.mandatory-ind {
+    color:red;
+    font-weight: bold;
+}

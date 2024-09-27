@@ -1,0 +1,327 @@
+/**
+ * @author iswill
+ * @since 19/07/2016
+ */
+
+body {
+	padding-top: 60px;
+}
+
+.navbar {
+    min-height: 40px;
+}
+
+.navbar .hkust-logo-title-box {
+    float: left;
+    height: 50px;
+    line-height: 50px;
+    vertical-align: middle;
+}
+
+.navbar .hkust-logo-title-box .logo {
+    float: left;
+    width: 110px;
+}
+
+.navbar .hkust-logo-title-box .title {
+	color: #2e6da4;
+	white-space: nowrap;
+	font-size: 16px;
+    font-weight: bold;
+    line-height: 40px;
+}
+
+.navbar .hkust-logo-title-box .title-long {
+	display: none;
+}
+
+.navbar .hkust-logo-title-box .title-short {
+	display: inline;
+}
+
+.navbar-nav > li > a {
+    padding-bottom: 10px;
+    padding-top: 10px;
+	font-size: 12px;
+}
+
+.main-body {
+	margin: 10px auto;
+}
+
+@media (min-width: 480px) {
+}
+
+@media (min-width: 768px) {
+	body {
+		padding-top: 90px;
+	}
+	.navbar .hkust-logo-title-box {
+	    height: 40px;
+	    line-height: 40px;
+	}
+	.user-datetime {
+		float: right;
+	}
+}
+
+@media (min-width: 992px) {
+	.navbar .hkust-logo-title-box .title-long {
+		display: inline;
+	}
+	.navbar .hkust-logo-title-box .title-short {
+		display: none;
+	}
+}
+
+@media (min-width: 1200px) {
+}
+
+.user-datetime {
+    color: #777;
+    display: block;
+    padding: 8px 15px;
+    text-align: right;
+}
+
+.panel-heading-with-btn {
+	display:table;
+}
+
+.panel-title-with-btn {
+	display:table-cell; vertical-align: middle; width:100%;
+}
+
+.panel-btn {
+	display:table-cell;
+	padding-left: 10px;
+	vertical-align: middle;
+	text-align: right;
+}
+
+.alert-fixed {
+	position: fixed;
+	top: 0;
+	right: 0;
+	left: 0;
+	margin-top: 60px;
+	z-index: 999;
+}
+
+.dt-hide-empty-msg .dataTables_empty {
+	display: none;
+}
+
+/* display property add-on */
+.d-block {
+	display: block;
+}
+
+.d-inline {
+	display: inline;
+}
+
+.d-inline-block {
+	display: inline-block;
+}
+
+/* text property add-on */
+.text-pre {
+	white-space: pre;
+}
+
+.text-pre-line {
+	white-space: pre-line;
+}
+
+.text-pre-wrap {
+	white-space: pre-wrap;
+}
+
+.text-left-important {
+	text-align: left!important;
+}
+
+/* circle button add-on */ 
+.ust.btn-circle {
+    width: 34px;
+    height: 34px;
+    border-radius: 17px;
+    padding: 0px;
+}
+
+.ust.btn-circle.btn-sm {
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+}
+
+.ust.btn-circle.btn-lg {
+    width: 42px;
+    height: 42px;
+    border-radius: 21px;
+}
+
+/* ztree font awesome skin add-on */
+.panel-body-role,
+.panel-body-perm {
+    height: 544px;
+}
+
+ul.ztree {
+    height: 480px;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+ul.tmpTargetzTree {
+  background-color: transparent;
+}
+
+span.tmpzTreeMove_arrow::before {
+  content: "\f04b";
+  font-family: FontAwesome;
+  color: inherit;
+}
+
+.ztree,
+.ztree *,
+.ztree li a,
+.ztree li a input.rename,
+.ztree li a.curSelectedNode,
+.ztree li a.curSelectedNode_Edit,
+.ztree li a.tmpTargetNode_inner,
+.ztree li span.button::before,
+.ztree li span.button.chk.checkbox_false_full_focus::before,
+.ztree li span.button.chk.checkbox_true_full_focus::before,
+.ztree li span.button.chk.checkbox_true_part_focus::before {
+    color: inherit;
+    background-color: transparent;
+}
+
+.ztree li a input.rename {
+    height: 100%;
+}
+
+.ztree li span.button.chk {
+    cursor: default;
+}
+
+.ztree li a.curSelectedNode_Edit {
+    border: none;
+}
+
+.ztree li span.button[class*="_ico_"]::before {
+    font-family: FontAwesome;
+    padding-top: 10px;
+    padding-left: 2px;
+    display: inline-block;
+}
+
+.ztree li span.button.root_open::before {
+    content: "\f078";
+    padding-top: 10px;
+    padding-left: 2px;
+    display: inline-block;
+}
+.ztree li span.button.root_close::before {
+    content: "\f054";
+    padding-top: 10px;
+    padding-left: 2px;
+    display: inline-block;
+}
+
+.ztree li span.button.addUser,
+.ztree li span.button.addRole  {
+    margin-left: 4px;
+    margin-right: -1px;
+    vertical-align: top;
+    padding-top: 10px;
+}
+
+.ztree li span.button.addUser::before,
+.ztree li span.button.addRole::before  {
+    font-family: FontAwesome;
+}
+
+.ztree li span.button.addUser::before  {
+    content: "\f007";
+}
+
+.ztree li span.button.addRole::before  {
+    content: "\f0c0";
+}
+
+.ztree li span.button[class*="user_ico_"]::before {
+    content: "\f007";
+    color: #1e90ff;
+}
+
+.ztree li span.button[class*="role_ico_"]::before {
+    content: "\f0c0";
+    color: #dc143c;
+}
+
+.ztree li span.button[class*="entity_ico_"]::before {
+    content: "\f07b";
+    color: #ffd700;
+}
+
+.ztree li span.button[class*="group_ico_"]::before {
+    content: "\f0e8";
+    color: #a9a9a9;
+}
+
+.ztree li span.button[class*="field_ico_"]::before {
+    content: "\f022";
+    color: #a9a9a9;
+}
+
+.ztree li span.button[class*="action_ico_"]::before {
+    content: "\f085";
+    color: #696969;
+}
+
+/* ztree font awesome tautocomplete add-on */
+.ztree div.acontainer {
+    display: inline-block;
+}
+
+.ztree div.acontainer table tbody tr td span {
+    margin-right: 0px;
+}
+
+.ztree div.acontainer span.form-control-feedback {
+    display: inline;
+    position: relative;
+    right: 12px;
+}
+
+.ztree div.has-feedback {
+    display: inline;
+}
+
+.ztree div.acontainer input.rename {
+    display: inherit;
+    padding-right: 10px;
+    width: 90px;
+}
+
+.ztree i.glyphicon {
+    font-family: Glyphicons Halflings;
+}
+
+.ztree li a.curSelectedNode,
+.ztree li a.curSelectedNode_Edit {
+    opacity: 1.0;
+}
+
+.ztree div.text-danger {
+    color: #a94442;
+    margin-left: 30px;
+    font-size: 10px;
+}
+
+.ztree span.has-error {
+    border: 1px #a94442 solid;
+}

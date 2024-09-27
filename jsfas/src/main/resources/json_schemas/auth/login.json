@@ -1,0 +1,19 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"title": "POST /auth/login",
+	"description": "Login with email and password",
+	"type": "object",
+	"properties": {
+		"query": {},
+		"body": {
+			"properties": {
+				"email": { "type": "string", "format": "email", "transform": ["trim", "toLowerCase"], "minLength": 4 },
+				"password": { "type": "string", "minLength": 1 }
+			},
+			"required": ["email", "password"],
+			"additionalProperties": false
+		}
+	},
+	"required": ["body"],
+	"additionalProperties": false
+}

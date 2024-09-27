@@ -1,0 +1,248 @@
+{
+	"properties": [
+		{
+			"name": "rbac.role.node.type",
+			"type": "java.lang.String",
+			"description": "Setting for rbac role tree node type 'role' icon css rendering."
+		},
+		{
+			"name": "rbac.user.node.type",
+			"type": "java.lang.String",
+			"description": "Setting for rbac role tree node type 'user' icon css rendering."
+		},
+		{
+			"name": "rbac.action.node.type",
+			"type": "java.lang.String",
+			"description": "Setting for rbac permission tree node type 'action' icon css rendering."
+		},
+		{
+			"name": "rbac.field.node.type",
+			"type": "java.lang.String",
+			"description": "Setting for rbac permission tree node type 'field' icon css rendering."
+		},
+		{
+			"name": "rbac.group.node.type",
+			"type": "java.lang.String",
+			"description": "Setting for rbac permission tree node type 'group' icon css rendering."
+		},
+		{
+			"name": "rbac.entity.node.type",
+			"type": "java.lang.String",
+			"description": "Setting for rbac permission tree node type 'entity' icon css rendering."
+		},
+		{
+			"name": "rbac.role.default",
+			"type": "java.lang.String",
+			"description": "Setting for rbac predefined default role group id, this role will be used for all new login user."
+		},
+		{
+			"name": "rbac.role.sysadmin",
+			"type": "java.lang.String",
+			"description": "Setting for rbac predefined system admin role group id, this role include all allow permission for all entities' actions.'"
+		},
+		{
+			"name": "rbac.perm.status.default",
+			"type": "java.lang.String",
+			"description": "Setting for rbac permission status default type, usually use 'reject' permission status type."
+		},
+		{
+			"name": "rbac.perm.status.allowed",
+			"type": "java.lang.String",
+			"description": "Setting for rbac permission status type to be treated as 'allow' permission."
+		},
+		{
+			"name": "rbac.perm.status.expired",
+			"type": "java.lang.String",
+			"description": "Setting for rbac permission status type to be treated as 'expired' permission."
+		},
+		{
+			"name": "rbac.perm.status.inactive",
+			"type": "java.lang.String",
+			"description": "Setting for rbac permission status type to be treated as 'inactive' permission."
+		},
+		{
+			"name": "rbac.perm.status.rejected",
+			"type": "java.lang.String",
+			"description": "Setting for list of rbac permission status type to be treated as 'reject' permission, use '|' as delimiter."
+		},
+		{
+			"name": "rbac.perm.fmt.str",
+			"type": "java.lang.String",
+			"description": "Setting for default permission string of rbac function"
+		},
+		{
+            "name": "rbac.role.username.check",
+            "type": "java.lang.Boolean",
+            "description": "Enable rbac role username check",
+            "defaultValue": true
+        },
+        {
+            "name": "rbac.role.username.tautocomplete",
+            "type": "java.lang.Boolean",
+            "description": "Enable rbac role username autocomplete",
+            "defaultValue": true
+        },
+		{
+			"name": "rbac.perm.inherit.nocheck",
+			"type": "java.lang.Boolean",
+			"description": "Render rbac inherited disabled permission as 'nocheck' style.",
+			"defaultValue": true
+		},
+		{
+			"name": "rbac.perm.predicate.enabled",
+			"type": "java.lang.Boolean",
+			"description": "Enable rbac predicate feature.",
+			"defaultValue": true
+		},
+		{
+            "name": "rbac.perm.effperiod.enabled",
+            "type": "java.lang.Boolean",
+            "description": "Enable rbac effective period feature.",
+            "defaultValue": true
+        },
+		{
+			"name": "rbac.perm.enabled",
+			"type": "java.lang.Boolean",
+			"description": "Enable role-based access control (rbac) feature.",
+			"defaultValue": true
+		},
+		{
+			"name": "app.host",
+			"type": "java.lang.String",
+			"description": "application host"
+		},
+		{
+			"name": "app.endpoint",
+			"type": "java.lang.String",
+			"description": "application endpoint"
+		},
+		{
+			"name": "app.service.security",
+			"type": "java.lang.String",
+			"description": "application service security (cas) url"
+		},
+		{
+			"name": "app.service.home",
+			"type": "java.lang.String",
+			"description": "application service home url"
+		},
+		{
+			"name": "cas.service.login",
+			"type": "java.lang.String",
+			"description": "cas service login url"
+		},
+		{
+			"name": "cas.service.logout",
+			"type": "java.lang.String",
+			"description": "cas service logout url"
+		},
+		{
+			"name": "cas.service.expire",
+			"type": "java.lang.String",
+			"description": "cas service expire url"
+		},
+		{
+			"name": "cas.url.prefix",
+			"type": "java.lang.String",
+			"description": "cas url prefix"
+		},
+		{
+			"name": "db.main.url",
+			"type": "java.lang.String",
+			"description": "db (main) url"
+		},
+		{
+			"name": "db.main.username",
+			"type": "java.lang.String",
+			"description": "db (main) username"
+		},
+		{
+			"name": "db.main.password",
+			"type": "java.lang.String",
+			"description": "db (main) password"
+		},
+		{
+			"name": "db.driver-class-name",
+			"type": "java.lang.String",
+			"description": "db driver class"
+		},
+		{
+			"name": "db.max-active",
+			"type": "java.lang.String",
+			"description": "db max active user"
+		},
+		{
+			"name": "db.max-idle",
+			"type": "java.lang.String",
+			"description": "db max idle user"
+		},
+		{
+			"name": "db.max-wait",
+			"type": "java.lang.String",
+			"description": "db max wait time"
+		},
+		{
+			"name": "smtp.host",
+			"type": "java.lang.String",
+			"description": "smtp host",
+			"defaultValue": "smtp.ust.hk"
+		},
+		{
+			"name": "smtp.username",
+			"type": "java.lang.String",
+			"description": "smtp password. blank if smtp.login.required=n"
+		},
+		{
+			"name": "smtp.password",
+			"type": "java.lang.String",
+			"description": "smtp password. blank if smtp.login.required=n"
+		},
+		{
+			"name": "smtp.login.required",
+			"type": "java.lang.String",
+			"description": "flag if require smtp login (y/n). for pre-dev(local): y; for d, t, u, p: n",
+			"defaultValue": "n"
+		},
+		{
+			"name": "password.protector.file",
+			"type": "java.lang.String",
+			"description": "absolute location of password protector file"
+		},
+		{
+			"name": "scheduler.enabled",
+			"type": "java.lang.String",
+			"description": "flag to enable scheduler (y/n)",
+			"defaultValue": "n"
+		},
+		{
+			"name": "jssv.link",
+			"type": "java.lang.String",
+			"description": "JSSV link"
+		},
+		{
+			"name": "jssv.oauth2.clientid",
+			"type": "java.lang.String",
+			"description": "JSSV OAuth cliend id"
+		},
+		{
+			"name": "jssv.oauth2.clientsecret",
+			"type": "java.lang.String",
+			"description": "JSSV OAuth cliend secret"
+		},
+		{
+			"name": "jssv.oauth2.accesstokenuri",
+			"type": "java.lang.String",
+			"description": "JSSV OAuth access token uri"
+		},
+		{
+			"name": "jssv.oauth2.sviso.username",
+			"type": "java.lang.String",
+			"description": "JSSV sviso username"
+		},
+		{
+			"name": "jssv.oauth2.sviso.password",
+			"type": "java.lang.String",
+			"description": "JSSV sviso password"
+		}
+	]
+}

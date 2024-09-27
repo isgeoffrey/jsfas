@@ -1,0 +1,12 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"title": "POST /auth/logout",
+	"description": "Logout",
+	"type": "object",
+	"properties": {
+		"query": {},
+		"body": {}
+	},
+	"required": [],
+	"additionalProperties": false
+}

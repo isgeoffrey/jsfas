@@ -1,0 +1,9 @@
+{
+	"GET /auth/cas/url": "auth/getCasUrl.json",
+	"POST /auth/cas/auth": "auth/casAuth.json",
+	"POST /auth/login": "auth/login.json",
+	"POST /auth/logout": "auth/logout.json",
+	
+	"GET /test/json": "getTestJson.json",
+	"POST /test/json": "postTestJson.json"
+}
