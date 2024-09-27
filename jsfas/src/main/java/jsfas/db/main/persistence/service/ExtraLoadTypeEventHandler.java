@@ -35,7 +35,7 @@ public class ExtraLoadTypeEventHandler implements ExtraLoadTypeService {
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	@Override
-	@Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+	@Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
 	public JSONObject createExtraLoadType(JSONObject inputJson, String opPageName) throws Exception {
 		String remoteUser = SecurityUtils.getCurrentLogin();
 		
@@ -202,7 +202,7 @@ public class ExtraLoadTypeEventHandler implements ExtraLoadTypeService {
 	}
 	
 	@Override
-	@Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+	@Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
 	public JSONObject updateExtraLoadType(String elTypeId, JSONObject inputJson, String opPageName) throws Exception {
 		String remoteUser = SecurityUtils.getCurrentLogin();
 		Timestamp currTS = GeneralUtil.getCurrentTimestamp();
@@ -300,7 +300,7 @@ public class ExtraLoadTypeEventHandler implements ExtraLoadTypeService {
 	}
 
 	@Override
-	@Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+	@Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
 	public JSONObject deleteExtraLoadTypeMapping(String elTypeSalElemntId, JSONObject inputJson, String opPageName) throws Exception {
 		JSONObject outputJson = new JSONObject();
 		

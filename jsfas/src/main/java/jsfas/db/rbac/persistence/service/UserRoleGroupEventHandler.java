@@ -69,7 +69,7 @@ public class UserRoleGroupEventHandler implements UserRoleGroupService {
     };
     
     @Override
-    @Transactional(value = "transactionManagerJselMain", readOnly = true)
+    @Transactional(value = "transactionManagerJsfasMain", readOnly = true)
     public List<CommonJson> getUserRoleGroup(Optional<String> optionalUserName, boolean treeView) {
         // TODO Auto-generated method stub
         List<CommonJson> nodeCommonJsonList = new ArrayList<>();

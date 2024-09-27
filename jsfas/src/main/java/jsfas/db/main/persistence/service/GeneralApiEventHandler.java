@@ -1798,7 +1798,7 @@ public class GeneralApiEventHandler implements GeneralApiService {
 	}
 
 	@Override
-	@Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+	@Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
 	public JSONObject createElApplAct(String applHdrId, JSONObject inputJson, String action, String remark, String actionFrom, String opPageName) throws Exception {
 		JSONObject outputJson = new JSONObject();
 		String remoteUser = SecurityUtils.getCurrentLogin();

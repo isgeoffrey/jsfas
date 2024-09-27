@@ -173,7 +173,7 @@ public class LoaEventHandler implements LoaService {
 	}
 	
 	@Override
-	@Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+	@Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
 	public void updateLoaFileList(String applHdrId, CommonJson inputJSON, String opPageName) throws Exception {
 		String remoteUser = SecurityUtils.getCurrentLogin();
 		
@@ -236,7 +236,7 @@ public class LoaEventHandler implements LoaService {
 	}
 	
 	@Override
-	@Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+	@Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
 	public void updateLoaStatusByHdrId(String applHdrId, JSONObject inputJson, String opPageName) throws Exception {
 		String remoteUser = SecurityUtils.getCurrentLogin();
 		Timestamp currTS = GeneralUtil.getCurrentTimestamp();
@@ -386,7 +386,7 @@ public class LoaEventHandler implements LoaService {
 //		sendEmailToRequestorToReview(applHdrId, opPageName, isAccept, remarks);
 	}
 
-	@Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+	@Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
 	private void insertLoA (String applHdrId, String opPageName, String updateUser) throws Exception {
 		
 		Object params = this.getFileDetailsById(applHdrId);
@@ -523,7 +523,7 @@ public class LoaEventHandler implements LoaService {
 //	}
 	
 	@Override
-	@Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+	@Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
 	public void loaScheduledJob (String jobUser, String op_page_nam) throws Exception{
 		List<ElApplHdrDAO> postList = elApplHdrRepository.findAllBrPosted();
 		Timestamp currTS = GeneralUtil.getCurrentTimestamp();
@@ -559,7 +559,7 @@ public class LoaEventHandler implements LoaService {
 	}
 
 	@Override
-	@Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+	@Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
 	public void sendRemindEmail (String applHdrId, JSONObject inputJson, String opPagenam) throws Exception{
 		String remoteUser = SecurityUtils.getCurrentLogin();
 		Timestamp currTS = GeneralUtil.getCurrentTimestamp();

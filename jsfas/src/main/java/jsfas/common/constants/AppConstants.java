@@ -23,7 +23,7 @@ public class AppConstants {
 	
 	public static final int LOCK_TIMEOUT = 10000;
 	
-	public static final String REDIS_PREFIX = "JSEL:";
+	public static final String REDIS_PREFIX = "JSFAS:";
 	public static final int SESSION_TIMEOUT = 3600;
 	
 	public static final String PASSWORD_PROTECTOR_PASSWORD = "MWRyb3dzc2FwanN3aGRldmNyeXB0b3Bhc3N3b3JkYWI=";
@@ -103,7 +103,7 @@ public class AppConstants {
     public static final String NO = "n";
 	
 	//application specific constants
-	public static final String SYS_SHORT_NAME = "JSEL";
+	public static final String SYS_SHORT_NAME = "JSFAS";
 	public static final String SYS_FULL_NAME = "Java Spring Template Project";
 	public static final String SYS_CATG_CDE = "A";
 	public static final String SCHEDULER_ADHOC_SIMPLE_TRIGGER_GROUP = SYS_SHORT_NAME.toLowerCase() + "AdhocSimpleTriggerGroup";

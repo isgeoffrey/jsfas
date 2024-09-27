@@ -106,7 +106,7 @@ public class RbacCommandEventHandler implements RbacCommandService {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     
     @Override
-    @Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+    @Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
     public void processBatch() throws Exception {
         List<UserProfileHeaderDAO> userProfileHeaderList = Collections.emptyList();
         List<PermissionDAO> expirePermissionList = Collections.emptyList();
@@ -203,14 +203,14 @@ public class RbacCommandEventHandler implements RbacCommandService {
     
     @SuppressWarnings("rawtypes")
     @Override
-    @Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+    @Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
     public void processCommandList(List commandList, String opPageName) throws Exception {
         processCommandList(commandList, opPageName, true);
     }
     
     @SuppressWarnings("rawtypes")
     @Override
-    @Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+    @Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
     public void processCommandList(List commandList, String opPageName, boolean checkPermission) throws Exception {
         // TODO Auto-generated method stub
         ObjectMapper mapper = new ObjectMapper();
@@ -246,7 +246,7 @@ public class RbacCommandEventHandler implements RbacCommandService {
     }
     
     @Override
-    @Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+    @Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
     public void processCommand(RbacCmdType rbacCmdType, CommonJson cmdParams, Map<String, RoleGroupDAO> roleNodeMap, String opPageName, boolean checkPermission) throws Exception {
         Subject currentUser = SecurityUtils.getSubject();
         switch(rbacCmdType) {
@@ -283,7 +283,7 @@ public class RbacCommandEventHandler implements RbacCommandService {
     }
     
     @Override
-    @Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+    @Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
     public void processRoleCommand(RbacCmdType rbacCmdType, CommonJson cmdParams, Map<String, RoleGroupDAO> roleNodeMap, String opPageName) throws Exception {
         String parentNodeId = cmdParams.getFilterValue("parentNodeId").trim();
         String nodeId = cmdParams.getFilterValue("nodeId").trim();
@@ -345,7 +345,7 @@ public class RbacCommandEventHandler implements RbacCommandService {
     }
     
     @Override
-    @Transactional(value = "transactionManagerJselMain", propagation = Propagation.SUPPORTS)
+    @Transactional(value = "transactionManagerJsfasMain", propagation = Propagation.SUPPORTS)
     public boolean validateRoleCmdParams(RbacCmdType rbacCmdType, CommonJson cmdParams, Map<String, RoleGroupDAO> roleNodeMap, Subject currentUser, boolean checkPermission) throws Exception {
         boolean validate = false;
         String parentNodeId = cmdParams.getFilterValue("parentNodeId").trim();
@@ -409,7 +409,7 @@ public class RbacCommandEventHandler implements RbacCommandService {
     }
     
     @Override
-    @Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+    @Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
     public void processUserCommand(RbacCmdType rbacCmdType, CommonJson cmdParams, Map<String, RoleGroupDAO> roleNodeMap, String opPageName) throws Exception {
         String parentNodeId = cmdParams.getFilterValue("parentNodeId").trim();
         String parentNodeIdOld = cmdParams.getFilterValue("parentNodeIdOld").trim();
@@ -506,7 +506,7 @@ public class RbacCommandEventHandler implements RbacCommandService {
     }
     
     @Override
-    @Transactional(value = "transactionManagerJselMain", propagation = Propagation.SUPPORTS)
+    @Transactional(value = "transactionManagerJsfasMain", propagation = Propagation.SUPPORTS)
     public boolean validateUserCmdParams(RbacCmdType rbacCmdType, CommonJson cmdParams, Map<String, RoleGroupDAO> roleNodeMap, Subject currentUser, boolean checkPermission) throws Exception {
         boolean validate = false;
         String parentNodeId = cmdParams.getFilterValue("parentNodeId").trim();
@@ -577,7 +577,7 @@ public class RbacCommandEventHandler implements RbacCommandService {
     
     @SuppressWarnings("rawtypes")
     @Override
-    @Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+    @Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
     public void processPermissionCommand(RbacCmdType rbacCmdType, CommonJson cmdParams, Map<String, RoleGroupDAO> roleNodeMap, String opPageName) throws Exception {
         String roleGroupId = cmdParams.getFilterValue("roleGroupId").trim();
         String parentNodeId = cmdParams.getFilterValue("parentNodeId").trim();
@@ -715,7 +715,7 @@ public class RbacCommandEventHandler implements RbacCommandService {
     
     @SuppressWarnings("rawtypes")
     @Override
-    @Transactional(value = "transactionManagerJselMain", propagation = Propagation.SUPPORTS)
+    @Transactional(value = "transactionManagerJsfasMain", propagation = Propagation.SUPPORTS)
     public boolean validatePermissionCmdParams(RbacCmdType rbacCmdType, CommonJson cmdParams, Map<String, RoleGroupDAO> roleNodeMap, Subject currentUser, boolean checkPermission) throws Exception {
         boolean validate = false;
         String roleGroupId = cmdParams.getFilterValue("roleGroupId").trim();

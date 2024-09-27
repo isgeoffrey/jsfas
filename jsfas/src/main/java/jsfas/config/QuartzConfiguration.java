@@ -184,13 +184,13 @@ public class QuartzConfiguration {
 	@Bean
 	@Autowired
 	public SchedulerFactoryBean schedulerFactoryBean(
-			DataSource dataSourceJselMain, PlatformTransactionManager transactionManagerJselMain, ApplicationContext applicationContext) {
+			DataSource dataSourceJsfasMain, PlatformTransactionManager transactionManagerJsfasMain, ApplicationContext applicationContext) {
 		
 		SchedulerFactoryBean scheduler = new SchedulerFactoryBean();
 		
 		scheduler.setConfigLocation(new ClassPathResource("quartz.properties"));
-        scheduler.setDataSource(dataSourceJselMain);
-        scheduler.setTransactionManager(transactionManagerJselMain);
+        scheduler.setDataSource(dataSourceJsfasMain);
+        scheduler.setTransactionManager(transactionManagerJsfasMain);
         
         AutowiringSpringBeanJobFactory jobFactory = new AutowiringSpringBeanJobFactory();
         jobFactory.setApplicationContext(applicationContext);
@@ -200,7 +200,7 @@ public class QuartzConfiguration {
         scheduler.setOverwriteExistingJobs(false);
 
         //scheduler.setAutoStartup(true);
-        scheduler.setSchedulerName("jselScheduler");
+        scheduler.setSchedulerName("jsfasScheduler");
         scheduler.setApplicationContextSchedulerContextKey("applicationContext");
 
         //wait for jobs to complete on app shutdown

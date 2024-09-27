@@ -1064,7 +1064,7 @@ public class ExtraLoadPaymentEventHandler implements ExtraLoadPaymentService {
 	}
 	
 	@Override
-	@Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+	@Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
 	public JSONObject editPymt(String applHdrId, JSONObject inputJson, String opPageName) throws Exception {
 		JSONObject outputJson = new JSONObject();
 		ElApplHdrDAO hdrDAO = elApplHdrRepository.findOne(applHdrId);
@@ -2332,7 +2332,7 @@ public class ExtraLoadPaymentEventHandler implements ExtraLoadPaymentService {
     }
     
 	@Override
-	@Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+	@Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
 	public JSONObject updatePymtStatus(String applHdrId, JSONObject inputJson, boolean isChanged, String opPageName) throws Exception {
 		JSONObject outputJson = new JSONObject();
 		
@@ -2997,7 +2997,7 @@ public class ExtraLoadPaymentEventHandler implements ExtraLoadPaymentService {
 		return outputJson;
 	}
 
-	@Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+	@Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
 	public void generatorHRMSPayment(String user, String opPageName) throws Exception {
 		
 		List<String> applHdrIdList = elApplHdrRepository.findPendingPaymentId();
@@ -4731,7 +4731,7 @@ public class ExtraLoadPaymentEventHandler implements ExtraLoadPaymentService {
 	}
 	
 	@Override
-	@Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+	@Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
 	public JSONObject updatePaymentScheduleByPNB(String applHdrId, JSONObject inputJson, String opPageName) throws Exception {
 		JSONObject outputJson = new JSONObject();
 		JSONArray scheduleArray = inputJson.getJSONArray("schedule_details");
@@ -4832,7 +4832,7 @@ public class ExtraLoadPaymentEventHandler implements ExtraLoadPaymentService {
 		return outputJson;
 	}
 
-	@Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+	@Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
 	private JSONObject pnbBatchUpdateSchedule(String applHdrId, JSONObject inputJson, String opPageName) throws Exception{
 		JSONObject outputJson = new JSONObject();
 		outputJson.put("applNbr", inputJson.get("appl_nbr"));
@@ -4913,7 +4913,7 @@ public class ExtraLoadPaymentEventHandler implements ExtraLoadPaymentService {
 		return outputJson;
 	}
 
-	@Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+	@Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
 	private JSONObject pnbBatchUpdateHdr(String applHdrId, JSONObject inputJson, String opPageName) throws Exception{
 		JSONObject outputJson = new JSONObject();
 		outputJson.put("applNbr", inputJson.get("appl_nbr"));

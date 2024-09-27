@@ -63,7 +63,7 @@ public class UserProfileEventHandler implements UserProfileService {
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	@Override
-	@Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+	@Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
 	public synchronized ResponseJson insertUserProfile(CommonJson inputJson, String opPageName) throws Exception {
 		ResponseJson result = new ResponseJson();
 		
@@ -158,7 +158,7 @@ public class UserProfileEventHandler implements UserProfileService {
 	}
 	
 	@Override
-	@Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+	@Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
 	public synchronized ResponseJson updateUserProfile(CommonJson inputJson, String opPageName) throws Exception {
 		ResponseJson result = new ResponseJson(); 
 		
@@ -246,7 +246,7 @@ public class UserProfileEventHandler implements UserProfileService {
 	}
 
 	@Override
-	@Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+	@Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
 	public synchronized ResponseJson deleteUserProfile(CommonJson inputJson) throws Exception {
 		ResponseJson result = new ResponseJson();
 		

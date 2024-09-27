@@ -213,7 +213,7 @@ public class ExtraLoadApplicationEventHandler implements ExtraLoadApplicationSer
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	@Override
-	@Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+	@Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
 	public JSONObject createElApplication(JSONObject inputJson, String opPageName) throws Exception {
 		JSONObject outputJson = new JSONObject();
 		String remoteUser = SecurityUtils.getCurrentLogin();
@@ -407,7 +407,7 @@ public class ExtraLoadApplicationEventHandler implements ExtraLoadApplicationSer
 	}
 
 	@Override
-	@Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+	@Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
 	public JSONObject editElApplication(String applHdrId, JSONObject inputJson, String opPageName) throws Exception {
 		String remoteUser = SecurityUtils.getCurrentLogin();
 		JSONObject outputJson = new JSONObject();
@@ -1962,7 +1962,7 @@ public class ExtraLoadApplicationEventHandler implements ExtraLoadApplicationSer
 	}
 
 	@Override
-	@Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+	@Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
 	public JSONObject createElApplAct(String applHdrId, JSONObject inputJson, String opPageName) throws Exception {
 		JSONObject outputJson = new JSONObject();
 		String remoteUser = SecurityUtils.getCurrentLogin();
@@ -2881,7 +2881,7 @@ public class ExtraLoadApplicationEventHandler implements ExtraLoadApplicationSer
 	}
 
 	@Override
-	@Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+	@Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
 	public JSONObject updateElApplicationStatus(String applHdrId, JSONObject inputJson, String opPageName) throws Exception {
 		JSONObject outputJson = new JSONObject();
 
@@ -5314,7 +5314,7 @@ public class ExtraLoadApplicationEventHandler implements ExtraLoadApplicationSer
 		return outputJson;
 	}
 
-	@Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+	@Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
 	private JSONObject updateBatchApprovalByLine(String applHdrId, JSONObject inputJson, String opPageName) throws Exception {
 		JSONObject outputJson = new JSONObject();
 		boolean isPymt = false;

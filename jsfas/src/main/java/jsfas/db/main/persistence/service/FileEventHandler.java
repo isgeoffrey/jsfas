@@ -36,7 +36,7 @@ public class FileEventHandler implements FileService {
 	}
 
 	@Override
-	@Transactional(value = "transactionManagerJselMain", rollbackFor = Exception.class)
+	@Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
 	public CommonJson insertAsset(MultipartFile file, String opPageName) throws IOException {
 		String remoteUser = SecurityUtils.getCurrentLogin();
 		

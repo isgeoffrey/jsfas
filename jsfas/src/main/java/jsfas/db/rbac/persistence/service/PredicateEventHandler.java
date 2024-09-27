@@ -29,7 +29,7 @@ import jsfas.db.rbac.persistence.repository.PredParamRepository;
 public class PredicateEventHandler implements PredicateService {
 
     @Autowired
-    @Qualifier("sessionFactoryJselMain")
+    @Qualifier("sessionFactoryJsfasMain")
     private SessionFactory sessionFactoryMain;
     
     @Autowired
@@ -106,7 +106,7 @@ public class PredicateEventHandler implements PredicateService {
     
     @SuppressWarnings("rawtypes")
     @Override
-    @Transactional(value = "transactionManagerJselMain", readOnly = true)
+    @Transactional(value = "transactionManagerJsfasMain", readOnly = true)
     public boolean evalPredicate(Optional<PredParamDAO> optionalPredParam) {
         // TODO Auto-generated method stub
         if(!optionalPredParam.isPresent()) {
