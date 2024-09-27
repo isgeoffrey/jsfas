@@ -208,20 +208,20 @@ public class QuartzConfiguration {
         
         //set the job details
         scheduler.setJobDetails(
-        		rbacBatchJobDetailFactoryBean().getObject(),
-        		sendEmailJobDetailFactoryBean().getObject(),
-        		payrollToHrmsProcDetailFactoryBean().getObject(),
-        		postBrPostProcDetailFactoryBean().getObject(),
-        		batchApprovalDailyEmailProcDetailFactoryBean().getObject()
+        		// rbacBatchJobDetailFactoryBean().getObject(),
+        		// sendEmailJobDetailFactoryBean().getObject(),
+        		// payrollToHrmsProcDetailFactoryBean().getObject(),
+        		// postBrPostProcDetailFactoryBean().getObject(),
+        		// batchApprovalDailyEmailProcDetailFactoryBean().getObject()
         );
             
         //set the job triggers
         scheduler.setTriggers(
-        		rbacBatchJobTriggerFactoryBean().getObject(),
-        		sendEmailJobTriggerFactoryBean().getObject(),
-        		payrollToHrmsProcTriggerFactoryBean().getObject(),
-        		postBrPostProcTriggerFactoryBean().getObject(),
-        		batchApprovalDailyEmailProcTriggerFactoryBean().getObject()
+        		// rbacBatchJobTriggerFactoryBean().getObject(),
+        		// sendEmailJobTriggerFactoryBean().getObject(),
+        		// payrollToHrmsProcTriggerFactoryBean().getObject(),
+        		// postBrPostProcTriggerFactoryBean().getObject(),
+        		// batchApprovalDailyEmailProcTriggerFactoryBean().getObject()
         		
         );
         
