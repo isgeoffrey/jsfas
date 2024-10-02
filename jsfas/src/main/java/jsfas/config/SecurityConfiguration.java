@@ -192,10 +192,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
    @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
-        	.antMatchers(RestURIConstants.CAS_URL)
-        	.antMatchers(RestURIConstants.CAS_AUTH)
-        	.antMatchers(RestURIConstants.LOGIN)
-        	.antMatchers(RestURIConstants.CAS_LOGOUT)
+//        	.antMatchers(RestURIConstants.CAS_URL)
+//        	.antMatchers(RestURIConstants.CAS_AUTH)
+//        	.antMatchers(RestURIConstants.LOGIN)
+//        	.antMatchers(RestURIConstants.CAS_LOGOUT)
+            .antMatchers("/*") //temporary to bypass all auth and validation
+            .antMatchers("/**") //temporary to bypass all auth and validation
         	.antMatchers("/fonts/**").antMatchers("/images/**").antMatchers("/scripts/**")
 			.antMatchers("/styles/**").antMatchers("/views/**").antMatchers("/i18n/**").antMatchers("/resources/**")
 			;

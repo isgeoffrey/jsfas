@@ -31,18 +31,6 @@ import jsfas.db.main.persistence.service.SchedulerEventHandler;
 import jsfas.db.main.persistence.service.SchedulerService;
 import jsfas.db.main.persistence.service.UserProfileEventHandler;
 import jsfas.db.main.persistence.service.UserProfileService;
-import jsfas.db.rbac.persistence.service.CustomPermissionEventHandler;
-import jsfas.db.rbac.persistence.service.CustomPermissionService;
-import jsfas.db.rbac.persistence.service.EntityRelationshipEventHandler;
-import jsfas.db.rbac.persistence.service.EntityRelationshipService;
-import jsfas.db.rbac.persistence.service.PermissionEventHandler;
-import jsfas.db.rbac.persistence.service.PermissionService;
-import jsfas.db.rbac.persistence.service.PredicateEventHandler;
-import jsfas.db.rbac.persistence.service.PredicateService;
-import jsfas.db.rbac.persistence.service.RbacCommandEventHandler;
-import jsfas.db.rbac.persistence.service.RbacCommandService;
-import jsfas.db.rbac.persistence.service.UserRoleGroupEventHandler;
-import jsfas.db.rbac.persistence.service.UserRoleGroupService;
 import net.bytebuddy.asm.Advice.This;
 
 /**
@@ -69,52 +57,52 @@ public class CoreConfig {
         return new RedisEventHandler();
     }
 
-	@Bean
-	public SchedulerService schedulerService() {
-       return new SchedulerEventHandler();
-	}
+//	@Bean
+//	public SchedulerService schedulerService() {
+//       return new SchedulerEventHandler();
+//	}
 	
 	/********** examples (remove for new project) **********/
 	
-	@Bean
-	public UserProfileService userProfileService() {
-       return new UserProfileEventHandler();
-	}
-	
-	@Bean
-    public UserRoleGroupService userRoleGroupService() {
-        return new UserRoleGroupEventHandler();
-    }
+//	@Bean
+//	public UserProfileService userProfileService() {
+//       return new UserProfileEventHandler();
+//	}
+//	
+//	@Bean
+//    public UserRoleGroupService userRoleGroupService() {
+//        return new UserRoleGroupEventHandler();
+//    }
+//    
+//    @Bean
+//    public EntityRelationshipService entityRelationshipService() {
+//        return new EntityRelationshipEventHandler();
+//    }
+//    
+//    @Bean
+//    public PermissionService permissionService() {
+//        return new PermissionEventHandler();
+//    }
+//    
+//    @Bean
+//    public CustomPermissionService customPermissionService() {
+//        return new CustomPermissionEventHandler();
+//    }
+//    
+//    @Bean
+//    public PredicateService predicateService() {
+//        return new PredicateEventHandler();
+//    }
+//    
+//    @Bean 
+//    public RbacCommandService rbacCommandService() {
+//        return new RbacCommandEventHandler();
+//    }
     
-    @Bean
-    public EntityRelationshipService entityRelationshipService() {
-        return new EntityRelationshipEventHandler();
-    }
-    
-    @Bean
-    public PermissionService permissionService() {
-        return new PermissionEventHandler();
-    }
-    
-    @Bean
-    public CustomPermissionService customPermissionService() {
-        return new CustomPermissionEventHandler();
-    }
-    
-    @Bean
-    public PredicateService predicateService() {
-        return new PredicateEventHandler();
-    }
-    
-    @Bean 
-    public RbacCommandService rbacCommandService() {
-        return new RbacCommandEventHandler();
-    }
-    
-    // @Bean
-    // public FileService fileService() {
-    // 	return new FileEventHandler();
-    // }
+     @Bean
+     public FileService fileService() {
+     	return new FileEventHandler();
+     }
     
     // @Bean
     // public ExtraLoadTypeService extraLoadTypeService() {

@@ -23,7 +23,7 @@ import jsfas.common.utils.GeneralUtil;
 import jsfas.db.jssv.persistence.service.OAuth2RestService;
 // import jsfas.db.main.persistence.domain.ElInpostStaffImpVDAO;
 // import jsfas.db.main.persistence.repository.ElInpostStaffImpVRepository;
-import jsfas.db.rbac.persistence.repository.UserRoleGroupRepository;
+//import jsfas.db.rbac.persistence.repository.UserRoleGroupRepository;
 import jsfas.redis.domain.Token;
 import jsfas.security.SecurityUtils;
 
@@ -41,8 +41,8 @@ public class AuthEventHandler implements AuthService {
 	// @Autowired
 	// ElInpostStaffImpVRepository elInpostStaffImpVRepository;
 	
-	@Autowired
-	UserRoleGroupRepository userRoleGroupRepository;
+//	@Autowired
+//	UserRoleGroupRepository userRoleGroupRepository;
 	
 	@Autowired
 	OAuth2RestService oAuth2RestService;
@@ -144,9 +144,9 @@ public class AuthEventHandler implements AuthService {
 				.set("token", token.getId())
 				.set("username", token.getUsername());
 			
-			if (userRoleGroupRepository.findByRoleGroupDesc("FO P&B").contains(username)) {
-				outputJson.set("isPnB", true);
-			}
+//			if (userRoleGroupRepository.findByRoleGroupDesc("FO P&B").contains(username)) {
+//				outputJson.set("isPnB", true);
+//			}
 			//TODO: add user type
 		}
 		

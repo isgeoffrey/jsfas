@@ -22,7 +22,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import jsfas.db.rbac.persistence.domain.UserRoleGroupDAO;
+//import jsfas.db.rbac.persistence.domain.UserRoleGroupDAO;
 import jsfas.web.serializer.CustomTimestampSerializer;
 
 @Entity

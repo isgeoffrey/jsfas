@@ -20,7 +20,7 @@ import org.springframework.web.context.request.RequestContextListener;
 
 import jsfas.common.condition.RBACCondition;
 import jsfas.security.permission.RbacWildcardPermissionResolver;
-import jsfas.security.realm.RbacRealm;
+//import jsfas.security.realm.RbacRealm;
 
 @Configuration
 @Conditional(value = RBACCondition.class)
@@ -45,7 +45,7 @@ public class ShiroConfig {
     @Bean
     public SecurityManager securityManager() {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-        securityManager.setRealm(realm());
+//        securityManager.setRealm(realm());
         securityManager.setCacheManager(shiroCacheManager());
         return securityManager;
     }
@@ -55,12 +55,12 @@ public class ShiroConfig {
         return new MemoryConstrainedCacheManager();
     }
     
-    @Bean
-    public Realm realm() {
-        RbacRealm jpaRealm = new RbacRealm(shiroCacheManager());
-        jpaRealm.setPermissionResolver(permissionResolver());
-        return jpaRealm;
-    }
+//    @Bean
+//    public Realm realm() {
+//        RbacRealm jpaRealm = new RbacRealm(shiroCacheManager());
+//        jpaRealm.setPermissionResolver(permissionResolver());
+//        return jpaRealm;
+//    }
     
     @Bean
     public PermissionResolver permissionResolver() {
