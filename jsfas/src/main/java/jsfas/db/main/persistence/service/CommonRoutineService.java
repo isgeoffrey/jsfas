@@ -18,7 +18,7 @@ import jsfas.db.main.persistence.domain.FunctionCatalogDAO;
 import jsfas.db.main.persistence.domain.FunctionDAO;
 import jsfas.db.main.persistence.domain.FunctionPageDAO;
 import jsfas.db.main.persistence.domain.SystemCatalogDAO;
-import jsfas.db.main.persistence.domain.UserProfileDetailDAO;
+//import jsfas.db.main.persistence.domain.UserProfileDetailDAO;
 
 /**
  * @author iseric
@@ -150,8 +150,8 @@ public interface CommonRoutineService {
 	 * @param userName
 	 * @return user detail map (funcCde + funcSubCde : GpUserProfileDetailDAO)
 	 */
-	public Map<String, UserProfileDetailDAO> getUserDetailForMenuMap(String userName);
-
+//	public Map<String, UserProfileDetailDAO> getUserDetailForMenuMap(String userName);
+	public Map<String, Object> getUserDetailForMenuMap(String userName);
 	/**
 	 * @param code
 	 * @param var1, var2, var3...

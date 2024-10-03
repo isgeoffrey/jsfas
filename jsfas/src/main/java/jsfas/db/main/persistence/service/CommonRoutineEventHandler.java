@@ -71,15 +71,13 @@ import jsfas.db.main.persistence.domain.FunctionDAO;
 import jsfas.db.main.persistence.domain.FunctionDAOPK;
 import jsfas.db.main.persistence.domain.FunctionPageDAO;
 import jsfas.db.main.persistence.domain.SystemCatalogDAO;
-import jsfas.db.main.persistence.domain.UserProfileDetailDAO;
-import jsfas.db.main.persistence.domain.UserProfileHeaderDAO;
 import jsfas.db.main.persistence.repository.FunctionCatalogRepository;
 import jsfas.db.main.persistence.repository.FunctionPageRepository;
 import jsfas.db.main.persistence.repository.FunctionRepository;
 import jsfas.db.main.persistence.repository.MessageTableRepository;
 import jsfas.db.main.persistence.repository.SystemCatalogRepository;
-import jsfas.db.main.persistence.repository.UserProfileDetailRepository;
-import jsfas.db.main.persistence.repository.UserProfileHeaderRepository;
+//import jsfas.db.main.persistence.repository.UserProfileDetailRepository;
+//import jsfas.db.main.persistence.repository.UserProfileHeaderRepository;
 import jsfas.security.SecurityUtils;
 
 public class CommonRoutineEventHandler implements CommonRoutineService {
@@ -101,11 +99,11 @@ public class CommonRoutineEventHandler implements CommonRoutineService {
 	@Autowired
 	private FunctionCatalogRepository functionCatalogRepository;
 
-	@Autowired
-	private UserProfileHeaderRepository userProfileHeaderRepository;
-	
-	@Autowired
-	private UserProfileDetailRepository userProfileDetailRepository;
+//	@Autowired
+//	private UserProfileHeaderRepository userProfileHeaderRepository;
+//	
+//	@Autowired
+//	private UserProfileDetailRepository userProfileDetailRepository;
 
 	@Autowired
 	private MessageTableRepository messageTableRepository;
@@ -126,30 +124,30 @@ public class CommonRoutineEventHandler implements CommonRoutineService {
 	@Override
 	public boolean isUserApprovedForFuncPage(String pageName) {
 
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();		
-		String userName = auth.getName();
-		
-		UserProfileHeaderDAO user = userProfileHeaderRepository.findOne(userName);
-		List<FunctionPageDAO> functionPages = functionPageRepository.findByPageName(pageName);
-		
-		if(user != null) {
-			for(UserProfileDetailDAO detail : user.getUserProfileDetails()) {
-				
-				//Logic for func page with funcCode only
-				if(functionPages.get(0).getFunctionPagePK().getFunction().getFunctionPK().getFunctionSubCode().trim().isEmpty()) {
-					if(detail.getUserProfileDetailPK().getFunctionCode().equalsIgnoreCase(functionPages.get(0).getFunctionPagePK().getFunction().getFunctionPK().getFunctionCode())) {
-						return true;
-					}
-				}
-				
-				//Logic for func page with funcCode + funcSubCode 
-				if(detail.getUserProfileDetailPK().getFunctionCode().equalsIgnoreCase(functionPages.get(0).getFunctionPagePK().getFunction().getFunctionPK().getFunctionCode())
-						&& detail.getUserProfileDetailPK().getFunctionSubCode().equalsIgnoreCase(functionPages.get(0).getFunctionPagePK().getFunction().getFunctionPK().getFunctionSubCode())) {
-					return true;
-				}
-								
-			}
-		}
+//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();		
+//		String userName = auth.getName();
+//		
+//		UserProfileHeaderDAO user = userProfileHeaderRepository.findOne(userName);
+//		List<FunctionPageDAO> functionPages = functionPageRepository.findByPageName(pageName);
+//		
+//		if(user != null) {
+//			for(UserProfileDetailDAO detail : user.getUserProfileDetails()) {
+//				
+//				//Logic for func page with funcCode only
+//				if(functionPages.get(0).getFunctionPagePK().getFunction().getFunctionPK().getFunctionSubCode().trim().isEmpty()) {
+//					if(detail.getUserProfileDetailPK().getFunctionCode().equalsIgnoreCase(functionPages.get(0).getFunctionPagePK().getFunction().getFunctionPK().getFunctionCode())) {
+//						return true;
+//					}
+//				}
+//				
+//				//Logic for func page with funcCode + funcSubCode 
+//				if(detail.getUserProfileDetailPK().getFunctionCode().equalsIgnoreCase(functionPages.get(0).getFunctionPagePK().getFunction().getFunctionPK().getFunctionCode())
+//						&& detail.getUserProfileDetailPK().getFunctionSubCode().equalsIgnoreCase(functionPages.get(0).getFunctionPagePK().getFunction().getFunctionPK().getFunctionSubCode())) {
+//					return true;
+//				}
+//								
+//			}
+//		}
 		
 		return false;
 	}
@@ -179,10 +177,10 @@ public class CommonRoutineEventHandler implements CommonRoutineService {
                     functionSubCode = "%%";
                 }
 
-                List<UserProfileDetailDAO> userProfileDetail = userProfileDetailRepository.findAuthorized(loginUser, functionCode, functionSubCode);
-                if (userProfileDetail.size() > 0) {
-                    return true;
-                }
+//                List<UserProfileDetailDAO> userProfileDetail = userProfileDetailRepository.findAuthorized(loginUser, functionCode, functionSubCode);
+//                if (userProfileDetail.size() > 0) {
+//                    return true;
+//                }
 		    }
 		}
 		return false;
@@ -326,18 +324,20 @@ public class CommonRoutineEventHandler implements CommonRoutineService {
 	}
 	
 	@Override
-	public Map<String, UserProfileDetailDAO> getUserDetailForMenuMap(String userName) {
-		Map<String, UserProfileDetailDAO> userProfileDetailListMap = new HashMap<String, UserProfileDetailDAO>();
-		List<UserProfileDetailDAO> gpUserProfileDetailList = userProfileDetailRepository.findByUserName(userName);
+	public Map<String, Object> getUserDetailForMenuMap(String userName) {
+//		Map<String, UserProfileDetailDAO> userProfileDetailListMap = new HashMap<String, UserProfileDetailDAO>();
+//		List<UserProfileDetailDAO> gpUserProfileDetailList = userProfileDetailRepository.findByUserName(userName);
+//		
+//		for (UserProfileDetailDAO userProfileDetailDAO: gpUserProfileDetailList) {
+//			userProfileDetailListMap.put(
+//					GeneralUtil.initBlankString(userProfileDetailDAO.getUserProfileDetailPK().getFunctionCode()) + 
+//					GeneralUtil.initBlankString(userProfileDetailDAO.getUserProfileDetailPK().getFunctionSubCode()), 
+//					userProfileDetailDAO);
+//		}
+//		
+//		return userProfileDetailListMap;
 		
-		for (UserProfileDetailDAO userProfileDetailDAO: gpUserProfileDetailList) {
-			userProfileDetailListMap.put(
-					GeneralUtil.initBlankString(userProfileDetailDAO.getUserProfileDetailPK().getFunctionCode()) + 
-					GeneralUtil.initBlankString(userProfileDetailDAO.getUserProfileDetailPK().getFunctionSubCode()), 
-					userProfileDetailDAO);
-		}
-		
-		return userProfileDetailListMap;
+		return new HashMap<String,Object>();	
 	}
 
 	@Override
@@ -500,11 +500,11 @@ public class CommonRoutineEventHandler implements CommonRoutineService {
 	@Override
 	public void setSecurityInfoPackage() {
 		try {
-			if (SecurityUtils.getCurrentLogin().trim().equalsIgnoreCase("anonymousUser")) {
-				userProfileHeaderRepository.setUserName("anonymousUser");
-			} else {
-				userProfileHeaderRepository.setUserName(SecurityUtils.getCurrentLogin());
-			}						
+//			if (SecurityUtils.getCurrentLogin().trim().equalsIgnoreCase("anonymousUser")) {
+//				userProfileHeaderRepository.setUserName("anonymousUser");
+//			} else {
+//				userProfileHeaderRepository.setUserName(SecurityUtils.getCurrentLogin());
+//			}						
 		} catch (Exception e) {
 			
 		} 

@@ -29,8 +29,8 @@ import jsfas.db.main.persistence.service.RedisService;
 // import jsfas.db.main.persistence.service.ReportService;
 import jsfas.db.main.persistence.service.SchedulerEventHandler;
 import jsfas.db.main.persistence.service.SchedulerService;
-import jsfas.db.main.persistence.service.UserProfileEventHandler;
-import jsfas.db.main.persistence.service.UserProfileService;
+//import jsfas.db.main.persistence.service.UserProfileEventHandler;
+//import jsfas.db.main.persistence.service.UserProfileService;
 import net.bytebuddy.asm.Advice.This;
 
 /**

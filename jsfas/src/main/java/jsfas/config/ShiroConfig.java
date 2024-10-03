@@ -9,6 +9,7 @@ import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.cache.MemoryConstrainedCacheManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.Realm;
+import org.apache.shiro.realm.SimpleAccountRealm;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.web.servlet.filter.OrderedRequestContextFilter;
@@ -45,7 +46,7 @@ public class ShiroConfig {
     @Bean
     public SecurityManager securityManager() {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-//        securityManager.setRealm(realm());
+        securityManager.setRealm(realm());
         securityManager.setCacheManager(shiroCacheManager());
         return securityManager;
     }
@@ -61,6 +62,14 @@ public class ShiroConfig {
 //        jpaRealm.setPermissionResolver(permissionResolver());
 //        return jpaRealm;
 //    }
+    @Bean
+    public SimpleAccountRealm realm() {
+        SimpleAccountRealm realm = new SimpleAccountRealm();
+        // Add users, roles, and permissions
+        realm.addAccount("user", "password", "userRole");
+        realm.addAccount("admin", "adminPassword", "adminRole");
+        return realm;
+    }
     
     @Bean
     public PermissionResolver permissionResolver() {
