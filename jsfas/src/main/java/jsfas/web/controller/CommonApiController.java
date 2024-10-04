@@ -211,7 +211,7 @@ public class CommonApiController {
 	public Response recordModifiedError(HttpServletRequest request, RecordModifiedException e) {
 		Response response = new Response();
 		//response.setMeta(ResponseCodeConstants.ERROR, commonRoutineService.getMessage("TTE0005", recordDesc));
-		response.setMeta(ResponseCodeConstants.ERROR, e.getMessage());
+		response.setMeta(ResponseCodeConstants.CONFLICT, e.getMessage());
 
 		if(Optional.ofNullable(request).isPresent()) {
 			log.debug("{} encountered record modified error for url = {}", SecurityUtils.getCurrentLogin(), request.getRequestURL());

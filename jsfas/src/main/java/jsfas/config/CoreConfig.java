@@ -9,26 +9,21 @@ import jsfas.db.main.persistence.service.AuthEventHandler;
 import jsfas.db.main.persistence.service.AuthService;
 import jsfas.db.main.persistence.service.CommonRoutineEventHandler;
 import jsfas.db.main.persistence.service.CommonRoutineService;
-import jsfas.db.main.persistence.service.EmailNotificationEventHandler;
-import jsfas.db.main.persistence.service.EmailNotificationService;
-// import jsfas.db.main.persistence.service.ExtraLoadApplicationEventHandler;
-// import jsfas.db.main.persistence.service.ExtraLoadApplicationService;
-// import jsfas.db.main.persistence.service.ExtraLoadPaymentEventHandler;
-// import jsfas.db.main.persistence.service.ExtraLoadPaymentService;
-// import jsfas.db.main.persistence.service.ExtraLoadTypeEventHandler;
-// import jsfas.db.main.persistence.service.ExtraLoadTypeService;
+
+
 import jsfas.db.main.persistence.service.FileEventHandler;
 import jsfas.db.main.persistence.service.FileService;
 import jsfas.db.main.persistence.service.GeneralApiEventHandler;
 import jsfas.db.main.persistence.service.GeneralApiService;
-// import jsfas.db.main.persistence.service.LoaEventHandler;
-// import jsfas.db.main.persistence.service.LoaService;
+
 import jsfas.db.main.persistence.service.RedisEventHandler;
 import jsfas.db.main.persistence.service.RedisService;
-// import jsfas.db.main.persistence.service.ReportEventHandler;
-// import jsfas.db.main.persistence.service.ReportService;
-import jsfas.db.main.persistence.service.SchedulerEventHandler;
-import jsfas.db.main.persistence.service.SchedulerService;
+
+import jsfas.db.main.persistence.service.StocktakeEventHandler;
+import jsfas.db.main.persistence.service.StocktakeService;
+
+// import jsfas.db.main.persistence.service.SchedulerEventHandler;
+// import jsfas.db.main.persistence.service.SchedulerService;
 //import jsfas.db.main.persistence.service.UserProfileEventHandler;
 //import jsfas.db.main.persistence.service.UserProfileService;
 import net.bytebuddy.asm.Advice.This;
@@ -94,40 +89,22 @@ public class CoreConfig {
 //        return new PredicateEventHandler();
 //    }
 //    
-//    @Bean 
-//    public RbacCommandService rbacCommandService() {
-//        return new RbacCommandEventHandler();
-//    }
     
      @Bean
      public FileService fileService() {
      	return new FileEventHandler();
      }
     
-    // @Bean
-    // public ExtraLoadTypeService extraLoadTypeService() {
-    // 	return new ExtraLoadTypeEventHandler();
-    // }
     
-    // @Bean
-    // public GeneralApiService gGeneralApiService() {
-    // 	return new GeneralApiEventHandler();
-    // }
+    @Bean
+    public GeneralApiService gGeneralApiService() {
+    	return new GeneralApiEventHandler();
+    }
     
-    // @Bean
-    // public ExtraLoadApplicationService extraLoadApplicationService() {
-    // 	return new ExtraLoadApplicationEventHandler();
-    // }
-    
-    // @Bean
-    // public LoaService loaService() {
-    // 	return new LoaEventHandler();
-    // }
-    
-    // @Bean
-    // public ExtraLoadPaymentService extraLoadPaymentService() {
-    // 	return new ExtraLoadPaymentEventHandler();
-    // }
+	@Bean
+	public StocktakeService stocktakeService(){
+		return new StocktakeEventHandler();
+	}
     
     // @Bean
     // public EmailNotificationService emailNotificationService() {

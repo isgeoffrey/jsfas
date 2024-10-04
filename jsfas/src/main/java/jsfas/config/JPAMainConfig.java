@@ -37,8 +37,8 @@ import jsfas.db.CommonJavaRepositoryImpl;
 @EnableTransactionManagement
 @EnableJpaRepositories(
 	basePackages = {"jsfas.db.main", "jsfas.db.rbac", "jsfas.security.realm"}, //all repositories under this basePackages will use this connection pool 
-	entityManagerFactoryRef = "entityManagerFactoryMain", //this name must be unique throughout all java application within same tomcat, format : entityManagerFactoryXXXXyyy (XXXX stands for application name, yyy stands for DB name)
-	transactionManagerRef = "transactionManagerMain", //this name must be unique throughout all java application within same tomcat , format : transactionManagerXXXXyyy (XXXX stands for application name, yyy stands for DB name)
+	entityManagerFactoryRef = "entityManagerFactoryJsfasMain", //this name must be unique throughout all java application within same tomcat, format : entityManagerFactoryXXXXyyy (XXXX stands for application name, yyy stands for DB name)
+	transactionManagerRef = "transactionManagerJsfasMain", //this name must be unique throughout all java application within same tomcat , format : transactionManagerXXXXyyy (XXXX stands for application name, yyy stands for DB name)
 	repositoryBaseClass = CommonJavaRepositoryImpl.class
 )
 public class JPAMainConfig {
@@ -52,9 +52,9 @@ public class JPAMainConfig {
 	@Bean
 	@Primary //Only Main DB is needed to set Primary
 	//this name must be unique throughout all java application within same tomcat, format : entityManagerFactoryXXXXyyy (XXXX stands for application name, yyy stands for DB name)
-	public LocalContainerEntityManagerFactoryBean entityManagerFactoryMain() { 
+	public LocalContainerEntityManagerFactoryBean entityManagerFactoryJsfasMain() { 
 		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-		em.setDataSource(dataSourceMain());
+		em.setDataSource(dataSourceJsfasMain());
 		em.setPackagesToScan(new String[] { "jsfas.db.main", "jsfas.db.rbac", "jsfas.security.realm" }); //all repositories under this basePackages will use this connection pool 
  
 		Map<String,Object> props = new HashMap<String,Object>();
@@ -71,12 +71,12 @@ public class JPAMainConfig {
 	@Bean
 	//@Primary //Only Main DB is needed to set Primary
 	//this name must be unique throughout all java application within same tomcat, format : sessionFactoryXXXXyyy (XXXX stands for application name, yyy stands for DB name)
-	public LocalSessionFactoryBean sessionFactoryMain() { 
+	public LocalSessionFactoryBean sessionFactoryJsfasMain() { 
 		Properties prop = new Properties();
 		prop.setProperty("hibernate.dialect", "org.hibernate.dialect.OracleDialect");
 		
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-		sessionFactory.setDataSource(dataSourceMain());
+		sessionFactory.setDataSource(dataSourceJsfasMain());
 		sessionFactory.setPackagesToScan(new String[] { "jsfas.db.main", "jsfas.db.rbac", "jsfas.security.realm" }); //all repositories under this basePackages will use this connection pool 
 		sessionFactory.setHibernateProperties(prop);
 		return sessionFactory;
@@ -85,7 +85,7 @@ public class JPAMainConfig {
 	@Bean
 	@Primary //Only Main DB is needed to set Primary
 	//function name must be unique throughout all java application within same tomcat, format : dataSourceXXXXyyy (XXXX stands for application name, yyy stands for DB name)
-	public DataSource dataSourceMain() {
+	public DataSource dataSourceJsfasMain() {
 	//public Log4jdbcProxyDataSource dataSourceJstpMain() { //log4jdbc, for pre-dev only
 		BasicDataSource dataSource = new BasicDataSource();
 		dataSource.setDriverClassName(env.getProperty(AppConstants.DB_DRIVER));
@@ -104,9 +104,9 @@ public class JPAMainConfig {
 	@Bean
 	@Primary //Only Main DB is needed to set Primary
 	//function name must be unique throughout all java application within same tomcat, format : transactionManagerXXXXyyy (XXXX stands for application name, yyy stands for DB name)
-	public PlatformTransactionManager transactionManagerMain() {
+	public PlatformTransactionManager transactionManagerJsfasMain() {
 		JpaTransactionManager transactionManager = new JpaTransactionManager();
-		transactionManager.setEntityManagerFactory(entityManagerFactoryMain().getObject());
+		transactionManager.setEntityManagerFactory(entityManagerFactoryJsfasMain().getObject());
  
 		return transactionManager;
 	}

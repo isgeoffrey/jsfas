@@ -28,6 +28,17 @@ public class RestURIConstants {
 	public static final String FILES_BY_ID = "/files/{id}";
 	
 	// General
-	public static final String STK_STATUS = "/stk_status";
+	public static final String STK_PLAN_STATUS = "/stk_plan_status";
+	public static final String DEPT_LIST = "/dept";
+	
+	// Stocktake plan
+	public static final String STK_PLAN_LIST = "/stk_plan_list";
+	public static final String STK_PLAN = "/stk_plan";
+	public static final String STK_PLAN_DTL_SUMMARY = "/stk_plan_dtl_summary";
+
+	public static final String STK_ITEM = "/stk_item";
+	public static final String STK_ITEM_CLEAR = "/stk_item_clear";
+
+	public static final String STK_PLAN_LOCK = "/stk_plan_lock";
 }
 

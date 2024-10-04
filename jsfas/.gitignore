@@ -6,4 +6,6 @@
 .project
 .springBeans
 .dockerfile
+.vscode
 /github/
+jsfas-error-log.log

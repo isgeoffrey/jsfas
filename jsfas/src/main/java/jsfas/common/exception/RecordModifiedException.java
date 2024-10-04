@@ -6,4 +6,8 @@ public class RecordModifiedException extends Exception {
 	public RecordModifiedException() {
 		super("Record modified by other process!");
 	}
+
+	public RecordModifiedException(String message) {
+		super(message);
+	}
 }
