@@ -21,11 +21,13 @@ import jsfas.common.utils.GeneralUtil;
 import jsfas.db.main.persistence.domain.FasStkPlanDtlDAO;
 import jsfas.db.main.persistence.domain.FasStkPlanDtlDAOPK;
 import jsfas.db.main.persistence.domain.FasStkPlanDtlStgDAO;
+import jsfas.db.main.persistence.domain.FasStkPlanDtlStgDAOPK;
 import jsfas.db.main.persistence.domain.FasStkPlanHdrDAO;
 import jsfas.db.main.persistence.repository.FasStkPlanDtlRepository;
 import jsfas.db.main.persistence.repository.FasStkPlanDtlStgRepository;
 import jsfas.db.main.persistence.repository.FasStkPlanHdrRepostiory;
 import jsfas.common.constants.StkPlanStatus;
+import jsfas.common.exception.ErrorDataArrayException;
 import jsfas.common.exception.InvalidParameterException;
 import jsfas.common.exception.RecordModifiedException;
 import jsfas.common.json.CommonJson;
@@ -389,98 +391,66 @@ public class StocktakeEventHandler implements StocktakeService{
 	@Override
 	public JSONObject HandleStockPlanExcelUpload(CommonJson inputJson, String opPageName) throws Exception {
 		
-		JSONArray ErrorMsg = new JSONArray();
+		if (inputJson.get("STK_PLAN_ID")==null) {
+			throw new InvalidParameterException("STK PLAN ID do not exist");
+		}
+		if (inputJson.get("FileName")==null) {
+			throw new InvalidParameterException("FileName do not exist");
+		}
+		
 		JSONArray uploadFileData= null;
 		// 1. get data from execl and put it in the jsonarray
 		try {
 			uploadFileData = getDataFromUploadFile(inputJson.get("FileName"));
 		}catch (Exception e) {
-			// todo 
-			// return error mesage
+			throw new ErrorDataArrayException(e.getMessage()); 
 		}
-		
+
 		// 2. foreach row of data , do data validation
-		for (int i = 0; i < uploadFileData.length();i++) {
-			JSONObject dataJSON = uploadFileData.getJSONObject(i);
-			String Exist =  dataJSON.getString("Exist");
-			String Yet_to_be_Located =  dataJSON.getString("Yet-to-be Located");
-			String Not_Exist =  dataJSON.getString("Not Exist");
-			
-			int Y = 0;
-			if (!(Exist.equals("Y")||Exist.equals("")) ){
-				CommonJson errormsg = new CommonJson();
-				errormsg.set("rowNumber", i);
-				errormsg.set("cell_name", "Exist");
-				errormsg.set("errorMsg", "this field is not Y or empty");
-			}else if(Exist.equals("Y")) {
-				Y++;
-			}
-			if (!(Yet_to_be_Located.equals("Y")||Yet_to_be_Located.equals("")) ){
-				CommonJson errormsg = new CommonJson();
-				errormsg.set("rowNumber", i);
-				errormsg.set("cell_name", "Yet_to_be_Located");
-				errormsg.set("errorMsg", "this field is not Y or empty");
-			} else if(Yet_to_be_Located.equals("Y")) {
-				Y++;
-			}
-			if (!(Not_Exist.equals("Y")||Not_Exist.equals("")) ){
-				CommonJson errormsg = new CommonJson();
-				errormsg.set("rowNumber", i);
-				errormsg.set("cell_name", "Not_Exist");
-				errormsg.set("errorMsg", "this field is not Y or empty");
-			}else if(Not_Exist.equals("Y")) {
-				Y++;
-			}
-			if (Y>1) {
-				CommonJson errormsg = new CommonJson();
-				errormsg.set("rowNumber", i);
-				errormsg.set("errorMsg", "this row contain more than Y");
-			}
-			
-			//2.1
-			
-			
-			//2.2
+		List<CommonJson> excelErrorList = new ArrayList<>();
+		validateUploadData(uploadFileData, excelErrorList);
+		if (!excelErrorList.isEmpty()) {
+			ErrorDataArrayException ErrorData = new ErrorDataArrayException();
+			ErrorData.setErrorList(excelErrorList);
+			throw ErrorData;
 		}
-		
-		
 		
 		// 3. return process result 
+	
+
 		JSONObject outputJSON = new JSONObject();
+		insertUploadedData (uploadFileData, opPageName);
+		outputJSON.put("data", uploadFileData);
 		
-		
-		
-		
-		
-		
-		
+
 		
 		return outputJSON;
 		
 	}
 	
 	
-	private JSONArray getDataFromUploadFile(String FileName){
+	private JSONArray getDataFromUploadFile(String FileName) throws JSONException{
 		
 		
 		JSONArray reponsearray = new JSONArray();
-		CommonJson data1 = new CommonJson();
-		CommonJson data2 = new CommonJson();
-		
+		JSONObject data1 = new JSONObject();
+		JSONObject data2 = new JSONObject();
 		data1
-			.set("STK_PLAN_ID", "123e4567-e89b-12d3-a456-426614174000")
-			.set("poId","PO_001")
-			.set("Exist","")
-			.set("Not Exist", "")
-			.set("Yet-to-be Located", "")
-			.set("Business Unit", "BU1");
+			.put("STK_PLAN_ID", "123e4567-e89b-12d3-a456-426614174000")
+			.put("poId","PO_001")
+			.put("Exist","")
+			.put("Not Exist", "Y")
+			.put("Yet-to-be Located", "")
+			.put("Business_Unit", "BU1")
+			.put("ASSET_ID", "ASSET_001");
 		data2
-			.set("STK_PLAN_ID", "123e4567-e89b-12d3-a456-426614174000")
-			.set("poId","PO_002")
-			.set("Exist","Y")
-			.set("Not Exist", "")
-			.set("Yet-to-be Located", "")
-			.set("Business Unit", "BU1");
+			.put("STK_PLAN_ID", "123e4567-e89b-12d3-a456-426614174000")
+			.put("poId","PO_002")
+			.put("Exist","Y")
+			.put("Not Exist", "")
+			.put("Yet-to-be Located", "")
+			.put("Business_Unit", "BU1")
+			.put("ASSET_ID", "ASSET_003");
 		
 		reponsearray.put(data1);
 		reponsearray.put(data2);
@@ -490,8 +460,14 @@ public class StocktakeEventHandler implements StocktakeService{
 		
 	}
 	
-	private void validateUploadData(ArrayList<String> uploadFileData, List<CommonJson> excelErrorList) {
+	private void validateUploadData(JSONArray uploadFileData, List<CommonJson> excelErrorList) {
+		
+		if (excelErrorList == null) {
+			excelErrorList = new ArrayList<>();
+		}
+	
 		for (int i = 0; i < uploadFileData.length();i++) {
+			try {
 			JSONObject dataJSON = uploadFileData.getJSONObject(i);
 			String Exist =  dataJSON.getString("Exist");
 			String Yet_to_be_Located =  dataJSON.getString("Yet-to-be Located");
@@ -503,6 +479,7 @@ public class StocktakeEventHandler implements StocktakeService{
 				errormsg.set("rowNumber", i);
 				errormsg.set("cell_name", "Exist");
 				errormsg.set("errorMsg", "this field is not Y or empty");
+				excelErrorList.add(errormsg);
 			}else if(Exist.equals("Y")) {
 				Y++;
 			}
@@ -511,6 +488,7 @@ public class StocktakeEventHandler implements StocktakeService{
 				errormsg.set("rowNumber", i);
 				errormsg.set("cell_name", "Yet_to_be_Located");
 				errormsg.set("errorMsg", "this field is not Y or empty");
+				excelErrorList.add(errormsg);
 			} else if(Yet_to_be_Located.equals("Y")) {
 				Y++;
 			}
@@ -519,21 +497,94 @@ public class StocktakeEventHandler implements StocktakeService{
 				errormsg.set("rowNumber", i);
 				errormsg.set("cell_name", "Not_Exist");
 				errormsg.set("errorMsg", "this field is not Y or empty");
+				excelErrorList.add(errormsg);
 			}else if(Not_Exist.equals("Y")) {
 				Y++;
 			}
 			if (Y>1) {
 				CommonJson errormsg = new CommonJson();
 				errormsg.set("rowNumber", i);
-				errormsg.set("errorMsg", "this row contain more than Y");
+				errormsg.set("errorMsg", "more than one column contan 'Y' ");
+				excelErrorList.add(errormsg);
 			}
-		
-	}
-	
-	
-	private void insertUploadedData (ArrayList<String> uploadFileData) {
-		
+			}catch(Exception e) {
+				log.info(e.getMessage());
+			}
 	}
 
+	}
+	
+	
+	private void insertUploadedData (JSONArray uploadFileData, String opPageName) throws JSONException, ErrorDataArrayException {
+		String currentUser = "isod01";
+		List<FasStkPlanDtlStgDAO> saveDaoList = new ArrayList();
+		try {
+			for (int i = 0; i < uploadFileData.length();i++) {
+				String modCtrlTxt = GeneralUtil.genModCtrlTxt();
+				Timestamp currentTimestamp = GeneralUtil.getCurrentTimestamp();
+
+				
+				
+				FasStkPlanDtlStgDAO FfasStkPlanDtlStgDAO = new FasStkPlanDtlStgDAO();
+				FasStkPlanDtlStgDAOPK fasStkPlanDtlStgDAOPK = new FasStkPlanDtlStgDAOPK();
+	
+				JSONObject dataJson = uploadFileData.getJSONObject(i);
+				fasStkPlanDtlStgDAOPK.setAssetId(dataJson.getString("ASSET_ID"));
+				fasStkPlanDtlStgDAOPK.setAssetId(dataJson.getString("Business_Unit"));
+				fasStkPlanDtlStgDAOPK.setAssetId(dataJson.getString("STK_PLAN_ID"));
+				
+				FfasStkPlanDtlStgDAO.setFasStkPlanDtlStgDAOPK(fasStkPlanDtlStgDAOPK);
+				FfasStkPlanDtlStgDAO.setPoId(dataJson.getString("poId"));
+			//	FfasStkPlanDtlStgDAO.setAssetDescrLong(null);
+//				FfasStkPlanDtlStgDAO.setDonationFlag(null);
+//				FfasStkPlanDtlStgDAO.setInvoiceDt(null);
+//				FfasStkPlanDtlStgDAO.setInvoiceId(null);
+//				FfasStkPlanDtlStgDAO.setLocation(null);
+//				FfasStkPlanDtlStgDAO.setNbv(null);
+//				FfasStkPlanDtlStgDAO.setNotUstProprty(null);
+//				FfasStkPlanDtlStgDAO.setProfileDescr(null);
+//				FfasStkPlanDtlStgDAO.setProfileId(null);
+//				FfasStkPlanDtlStgDAO.setRegionName(null);
+//				FfasStkPlanDtlStgDAO.setTotalCost(null);
+//				FfasStkPlanDtlStgDAO.setVoucherId(null);
+				
+				FfasStkPlanDtlStgDAO.setModCtrlTxt(modCtrlTxt);
+				FfasStkPlanDtlStgDAO.setCreateDate(currentTimestamp);
+				FfasStkPlanDtlStgDAO.setCreateUser(currentUser);
+				FfasStkPlanDtlStgDAO.setChangeDate(currentTimestamp);
+				FfasStkPlanDtlStgDAO.setChangeUser(currentUser);
+				FfasStkPlanDtlStgDAO.setOpPageName(opPageName);
+				
+				
+				
+				
+				String Exist =  dataJson.getString("Exist");
+				String Yet_to_be_Located =  dataJson.getString("Yet-to-be Located");
+				String Not_Exist =  dataJson.getString("Not Exist");
+				
+				if (Exist.equals("Y")) {
+					FfasStkPlanDtlStgDAO.setStkStatus("E");
+				}else 
+				if (Yet_to_be_Located.equals("Y")) {
+					FfasStkPlanDtlStgDAO.setStkStatus("Y");
+				}else 
+				if (Not_Exist.equals("Y")) {
+					FfasStkPlanDtlStgDAO.setStkStatus("N");
+				}else {
+					FfasStkPlanDtlStgDAO.setStkStatus("");
+				}
+				
+				saveDaoList.add(FfasStkPlanDtlStgDAO);
+			}
+//			throw new Exception();
+			
+//			stkPlanDtlStgRepository.saveAll(saveDaoList);
+			
+		}catch (Exception e) {
+			throw new ErrorDataArrayException("Unable to update Staging data");
+		}
+	}
+	
+	
 
 }

@@ -1,6 +1,7 @@
 package jsfas.web.controller;
 
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,11 +20,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jsfas.common.constants.RestURIConstants;
+import jsfas.common.exception.ErrorDataArrayException;
 import jsfas.common.exception.InvalidParameterException;
 import jsfas.common.json.CommonJson;
 import jsfas.common.json.Response;
 import jsfas.common.utils.GeneralUtil;
 import jsfas.db.main.persistence.service.StocktakeService;
+import jsfas.common.constants.AppConstants;
+import jsfas.common.json.CommonResponseJson;
+import jsfas.security.SecurityUtils;
 
 
 @RestController
@@ -32,7 +38,7 @@ public class StocktakeController extends CommonApiController {
 	@Autowired
 	StocktakeService stocktakeService;
 	
-
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@RequestMapping(value = RestURIConstants.STK_PLAN_LIST, method=RequestMethod.POST)
 	public Response getStkPlanList(HttpServletRequest request, @RequestBody CommonJson inputJson) throws Exception {
@@ -124,7 +130,7 @@ public class StocktakeController extends CommonApiController {
 	}
 	
 	@RequestMapping(value="/upload_stk_plan_excel", method=RequestMethod.POST)
-	public Response uploadStockTakePlanExcel(HttpServletRequest request, @RequestBody  @RequestParam Map<String,String> paramMap) throws Exception {
+	public Response uploadStockTakePlanExcel(HttpServletRequest request, @RequestBody CommonJson inputJson) throws Exception {
 		Response response = new Response();
 		String opPageName = getOpPageName(request);
 		CommonJson data = new CommonJson().set("stkPlan", GeneralUtil.jsonObjectToCommonJson(stocktakeService.HandleStockPlanExcelUpload(inputJson, opPageName)));
@@ -132,6 +138,26 @@ public class StocktakeController extends CommonApiController {
 				
 		response.setData(data);
 		return setSuccess(response);
+	}
+	
+	@ExceptionHandler(ErrorDataArrayException.class)
+	public CommonResponseJson uploadFileDataError(HttpServletRequest request, ErrorDataArrayException e) {
+		CommonResponseJson responseJson = new CommonResponseJson();
+		responseJson.setStatus("validationError");
+		responseJson.setMessage(e.getMessage());
+		responseJson.setCommonJsonList(e.getErrorList());
+		
+		
+		if(Optional.ofNullable(request).isPresent()) {
+			log.debug("{} encountered upload excel file data format error for url = {}", SecurityUtils.getCurrentLogin(), request.getRequestURL());
+		} else {
+			log.debug("{} encountered upload excel file data format error", SecurityUtils.getCurrentLogin());
+		}
+		
+		log.debug("handleError URL = " + request.getRequestURL());
+		log.debug("handleError MSG = " + Thread.currentThread().getStackTrace()[1].getMethodName()+"@"+this.getClass().getSimpleName(), e);
+		
+		return responseJson;
 	}
 	
 
