@@ -1,6 +1,7 @@
 package jsfas.db.main.persistence.domain;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,10 +35,10 @@ public class FasStkPlanDtlStgDAO implements Serializable, Comparable<FasStkPlanD
     private String assetDescrLong;
 
     @Column(name = "TOTAL_COST")
-    private Double totalCost;
+    private BigDecimal totalCost;
 
     @Column(name = "NBV")
-    private Double nbv;
+    private BigDecimal nbv;
 
     @Column(name = "VOUCHER_ID")
     private String voucherId;
@@ -108,19 +109,19 @@ public class FasStkPlanDtlStgDAO implements Serializable, Comparable<FasStkPlanD
 		this.assetDescrLong = assetDescrLong;
 	}
 
-	public Double getTotalCost() {
+	public BigDecimal getTotalCost() {
 		return totalCost;
 	}
 
-	public void setTotalCost(Double totalCost) {
+	public void setTotalCost(BigDecimal totalCost) {
 		this.totalCost = totalCost;
 	}
 
-	public Double getNbv() {
+	public BigDecimal getNbv() {
 		return nbv;
 	}
 
-	public void setNbv(Double nbv) {
+	public void setNbv(BigDecimal nbv) {
 		this.nbv = nbv;
 	}
 

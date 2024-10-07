@@ -15,4 +15,5 @@ public interface FasStkPlanDtlStgRepository extends CommonRepository<FasStkPlanD
 
 	@Query(value="SELECT * FROM fas_stk_plan_dtl_stg where stk_plan_id = :planID", nativeQuery = true)
 	List<FasStkPlanDtlStgDAO> findAllDtlFromPlanId(String planID);
+
 }

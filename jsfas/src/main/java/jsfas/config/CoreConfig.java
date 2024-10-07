@@ -21,7 +21,8 @@ import jsfas.db.main.persistence.service.RedisService;
 
 import jsfas.db.main.persistence.service.StocktakeEventHandler;
 import jsfas.db.main.persistence.service.StocktakeService;
-
+import jsfas.db.main.persistence.service.StocktakeStagingService;
+import jsfas.db.main.persistence.service.StocktakeStagingEventHandler;
 // import jsfas.db.main.persistence.service.SchedulerEventHandler;
 // import jsfas.db.main.persistence.service.SchedulerService;
 //import jsfas.db.main.persistence.service.UserProfileEventHandler;
@@ -104,6 +105,11 @@ public class CoreConfig {
 	@Bean
 	public StocktakeService stocktakeService(){
 		return new StocktakeEventHandler();
+	}
+
+	@Bean
+	public StocktakeStagingService stocktakeStagingService(){
+		return new StocktakeStagingEventHandler();
 	}
     
     // @Bean

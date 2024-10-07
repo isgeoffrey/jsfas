@@ -22,6 +22,7 @@ import jsfas.common.json.CommonJson;
 import jsfas.common.json.Response;
 import jsfas.common.utils.GeneralUtil;
 import jsfas.db.main.persistence.service.StocktakeService;
+import jsfas.db.main.persistence.service.StocktakeStagingService;
 
 
 @RestController
@@ -30,6 +31,9 @@ public class StocktakeController extends CommonApiController {
 	
 	@Autowired
 	StocktakeService stocktakeService;
+
+	@Autowired
+	StocktakeStagingService stagingService;
 
 
 	@RequestMapping(value = RestURIConstants.STK_PLAN_LIST, method=RequestMethod.POST)
@@ -121,6 +125,56 @@ public class StocktakeController extends CommonApiController {
 		return setSuccess(response);
 	}
 	
+	
+
+	@RequestMapping(value = RestURIConstants.STK_PENDING, method = RequestMethod.GET)
+	public Response getStagingItemsById(HttpServletRequest request, @RequestParam Map<String,String> paramMap) throws Exception {
+		Response response = new Response();
+		
+		JSONObject requestParam = new JSONObject(paramMap);
+		
+		CommonJson data = new CommonJson().set("stkPlan", 
+		GeneralUtil.jsonObjectToCommonJson(stagingService.getStagingItemsById(requestParam)));
+		
+		response.setData(data);
+		return setSuccess(response);
+	}
+
+	@RequestMapping(value = RestURIConstants.STK_PENDING, method=RequestMethod.DELETE)
+	public Response deleteStagingItems(HttpServletRequest request, @RequestParam Map<String,String> paramMap) throws Exception {
+		Response response = new Response();
+		
+		JSONObject requestParam = new JSONObject(paramMap);
+		
+		stagingService.deleteAllStagingById(requestParam);
+		
+		return setSuccess(response);
+	}
+
+	@RequestMapping(value = RestURIConstants.STG_ITEM, method=RequestMethod.POST)
+	public Response updateStagingItemByRow(HttpServletRequest request, @RequestBody CommonJson inputJson) throws Exception {
+		Response response = new Response();
+		
+		CommonJson data = new CommonJson()
+		.set("stkItem", GeneralUtil.jsonObjectToCommonJson(stagingService.updateStagingByRow(GeneralUtil.commonJsonToJsonObject(inputJson))))
+		.set("stkPlanSummary", GeneralUtil.jsonObjectToCommonJson(stocktakeService.getSummaryOfStocktakeById(GeneralUtil.commonJsonToJsonObject(inputJson))));
+		
+		response.setData(data);
+		return setSuccess(response);
+	}
+
+	@RequestMapping(value = RestURIConstants.STG_ITEM_CLEAR, method=RequestMethod.POST)
+	public Response clearStagingItemByRow(HttpServletRequest request, @RequestBody CommonJson inputJson) throws Exception {
+		Response response = new Response();
+		
+		CommonJson data = new CommonJson()
+		.set("stkItem", GeneralUtil.jsonObjectToCommonJson(stagingService.clearStagingByRow(GeneralUtil.commonJsonToJsonObject(inputJson))))
+		.set("stkPlanSummary", GeneralUtil.jsonObjectToCommonJson(stocktakeService.getSummaryOfStocktakeById(GeneralUtil.commonJsonToJsonObject(inputJson))));
+		
+		response.setData(data);
+		return setSuccess(response);
+	}
+
 	
 
 }
