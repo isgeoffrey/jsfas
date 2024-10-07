@@ -4,6 +4,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mchange.rmi.NotAuthorizedException;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import java.sql.Timestamp;
@@ -25,6 +27,7 @@ import jsfas.db.main.persistence.repository.FasStkPlanHdrRepostiory;
 import jsfas.common.constants.StkPlanStatus;
 import jsfas.common.exception.InvalidParameterException;
 import jsfas.common.exception.RecordModifiedException;
+import jsfas.common.json.CommonJson;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -380,7 +383,51 @@ public class StocktakeEventHandler implements StocktakeService{
 		log.info("clearStocktakeByRow Success {} {} {}: ",stkItem.getFasStkPlanDtlDAOPK().getStkPlanId(),stkItem.getFasStkPlanDtlDAOPK().getBusinessUnit(),stkItem.getFasStkPlanDtlDAOPK().getAssetId());
 		return outputJSON;
 	}
+	
 
+	@Override
+	public JSONObject HandleStockPlanExcelUpload(CommonJson inputJson, String opPageName) {
+		
+		ArrayList<HashMap<String, Object>> uploadFileData= null;
+		try {
+			uploadFileData = getDataFromUploadFile.(inputJson.get("FileName"));
+		}
+		
+		
+		JSONObject outputJSON = new JSONObject();
+		
+		
+		
+		
+		
+		
+		
+		
+		return outputJSON;
+		
+	}
+	
+	
+	private ArrayList<String> getDataFromUploadFile(String FileName){
+		
+		List <String> data = new ArrayList<>();
+		data
+			.set
+		
+		
+		return null;
+		
+	}
+	
+	private JSONArray validateUploadData(ArrayList<String> uploadFileData) {
+		return null;
+		
+	}
+	
+	
+	private void insertUploadedData (ArrayList<String> uploadFileData) {
+		
+	}
 
 
 }

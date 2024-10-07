@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jsfas.common.constants.RestURIConstants;
+import jsfas.common.exception.InvalidParameterException;
 import jsfas.common.json.CommonJson;
 import jsfas.common.json.Response;
 import jsfas.common.utils.GeneralUtil;
@@ -30,6 +31,7 @@ public class StocktakeController extends CommonApiController {
 	
 	@Autowired
 	StocktakeService stocktakeService;
+	
 
 
 	@RequestMapping(value = RestURIConstants.STK_PLAN_LIST, method=RequestMethod.POST)
@@ -121,6 +123,16 @@ public class StocktakeController extends CommonApiController {
 		return setSuccess(response);
 	}
 	
+	@RequestMapping(value="/upload_stk_plan_excel", method=RequestMethod.POST)
+	public Response uploadStockTakePlanExcel(HttpServletRequest request, @RequestBody CommonJson inputJson) throws Exception {
+		Response response = new Response();
+		String opPageName = getOpPageName(request);
+		CommonJson data = new CommonJson().set("stkPlan", GeneralUtil.jsonObjectToCommonJson(stocktakeService.HandleStockPlanExcelUpload(inputJson, opPageName)));
+		
+				
+		response.setData(data);
+		return setSuccess(response);
+	}
 	
 
 }
