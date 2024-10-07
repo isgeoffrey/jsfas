@@ -40,5 +40,7 @@ public class RestURIConstants {
 	public static final String STK_ITEM_CLEAR = "/stk_item_clear";
 
 	public static final String STK_PLAN_LOCK = "/stk_plan_lock";
+	
+	public static final String STK_FILE_UPLOAD = "/stk_file_upload";
 }
 
