@@ -124,7 +124,7 @@ public class StocktakeController extends CommonApiController {
 	}
 	
 	@RequestMapping(value="/upload_stk_plan_excel", method=RequestMethod.POST)
-	public Response uploadStockTakePlanExcel(HttpServletRequest request, @RequestBody CommonJson inputJson) throws Exception {
+	public Response uploadStockTakePlanExcel(HttpServletRequest request, @RequestBody  @RequestParam Map<String,String> paramMap) throws Exception {
 		Response response = new Response();
 		String opPageName = getOpPageName(request);
 		CommonJson data = new CommonJson().set("stkPlan", GeneralUtil.jsonObjectToCommonJson(stocktakeService.HandleStockPlanExcelUpload(inputJson, opPageName)));

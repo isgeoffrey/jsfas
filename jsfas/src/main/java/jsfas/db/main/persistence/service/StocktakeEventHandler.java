@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 
 import java.util.Map;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -386,14 +387,65 @@ public class StocktakeEventHandler implements StocktakeService{
 	
 
 	@Override
-	public JSONObject HandleStockPlanExcelUpload(CommonJson inputJson, String opPageName) {
+	public JSONObject HandleStockPlanExcelUpload(CommonJson inputJson, String opPageName) throws Exception {
 		
-		ArrayList<HashMap<String, Object>> uploadFileData= null;
+		JSONArray ErrorMsg = new JSONArray();
+		JSONArray uploadFileData= null;
+		// 1. get data from execl and put it in the jsonarray
 		try {
-			uploadFileData = getDataFromUploadFile.(inputJson.get("FileName"));
+			uploadFileData = getDataFromUploadFile(inputJson.get("FileName"));
+		}catch (Exception e) {
+			// todo 
+			// return error mesage
+		}
+		
+		// 2. foreach row of data , do data validation
+		for (int i = 0; i < uploadFileData.length();i++) {
+			JSONObject dataJSON = uploadFileData.getJSONObject(i);
+			String Exist =  dataJSON.getString("Exist");
+			String Yet_to_be_Located =  dataJSON.getString("Yet-to-be Located");
+			String Not_Exist =  dataJSON.getString("Not Exist");
+			
+			int Y = 0;
+			if (!(Exist.equals("Y")||Exist.equals("")) ){
+				CommonJson errormsg = new CommonJson();
+				errormsg.set("rowNumber", i);
+				errormsg.set("cell_name", "Exist");
+				errormsg.set("errorMsg", "this field is not Y or empty");
+			}else if(Exist.equals("Y")) {
+				Y++;
+			}
+			if (!(Yet_to_be_Located.equals("Y")||Yet_to_be_Located.equals("")) ){
+				CommonJson errormsg = new CommonJson();
+				errormsg.set("rowNumber", i);
+				errormsg.set("cell_name", "Yet_to_be_Located");
+				errormsg.set("errorMsg", "this field is not Y or empty");
+			} else if(Yet_to_be_Located.equals("Y")) {
+				Y++;
+			}
+			if (!(Not_Exist.equals("Y")||Not_Exist.equals("")) ){
+				CommonJson errormsg = new CommonJson();
+				errormsg.set("rowNumber", i);
+				errormsg.set("cell_name", "Not_Exist");
+				errormsg.set("errorMsg", "this field is not Y or empty");
+			}else if(Not_Exist.equals("Y")) {
+				Y++;
+			}
+			if (Y>1) {
+				CommonJson errormsg = new CommonJson();
+				errormsg.set("rowNumber", i);
+				errormsg.set("errorMsg", "this row contain more than Y");
+			}
+			
+			//2.1
+			
+			
+			//2.2
 		}
 		
 		
+		
+		// 3. return process result 
 		JSONObject outputJSON = new JSONObject();
 		
 		
@@ -408,19 +460,73 @@ public class StocktakeEventHandler implements StocktakeService{
 	}
 	
 	
-	private ArrayList<String> getDataFromUploadFile(String FileName){
-		
-		List <String> data = new ArrayList<>();
-		data
-			.set
+	private JSONArray getDataFromUploadFile(String FileName){
 		
 		
-		return null;
+		JSONArray reponsearray = new JSONArray();
+		CommonJson data1 = new CommonJson();
+		CommonJson data2 = new CommonJson();
+		
+		data1
+			.set("STK_PLAN_ID", "123e4567-e89b-12d3-a456-426614174000")
+			.set("poId","PO_001")
+			.set("Exist","")
+			.set("Not Exist", "")
+			.set("Yet-to-be Located", "")
+			.set("Business Unit", "BU1");
+		data2
+			.set("STK_PLAN_ID", "123e4567-e89b-12d3-a456-426614174000")
+			.set("poId","PO_002")
+			.set("Exist","Y")
+			.set("Not Exist", "")
+			.set("Yet-to-be Located", "")
+			.set("Business Unit", "BU1");
+		
+		reponsearray.put(data1);
+		reponsearray.put(data2);
+		
+		
+		return reponsearray;
 		
 	}
 	
-	private JSONArray validateUploadData(ArrayList<String> uploadFileData) {
-		return null;
+	private void validateUploadData(ArrayList<String> uploadFileData, List<CommonJson> excelErrorList) {
+		for (int i = 0; i < uploadFileData.length();i++) {
+			JSONObject dataJSON = uploadFileData.getJSONObject(i);
+			String Exist =  dataJSON.getString("Exist");
+			String Yet_to_be_Located =  dataJSON.getString("Yet-to-be Located");
+			String Not_Exist =  dataJSON.getString("Not Exist");
+			
+			int Y = 0;
+			if (!(Exist.equals("Y")||Exist.equals("")) ){
+				CommonJson errormsg = new CommonJson();
+				errormsg.set("rowNumber", i);
+				errormsg.set("cell_name", "Exist");
+				errormsg.set("errorMsg", "this field is not Y or empty");
+			}else if(Exist.equals("Y")) {
+				Y++;
+			}
+			if (!(Yet_to_be_Located.equals("Y")||Yet_to_be_Located.equals("")) ){
+				CommonJson errormsg = new CommonJson();
+				errormsg.set("rowNumber", i);
+				errormsg.set("cell_name", "Yet_to_be_Located");
+				errormsg.set("errorMsg", "this field is not Y or empty");
+			} else if(Yet_to_be_Located.equals("Y")) {
+				Y++;
+			}
+			if (!(Not_Exist.equals("Y")||Not_Exist.equals("")) ){
+				CommonJson errormsg = new CommonJson();
+				errormsg.set("rowNumber", i);
+				errormsg.set("cell_name", "Not_Exist");
+				errormsg.set("errorMsg", "this field is not Y or empty");
+			}else if(Not_Exist.equals("Y")) {
+				Y++;
+			}
+			if (Y>1) {
+				CommonJson errormsg = new CommonJson();
+				errormsg.set("rowNumber", i);
+				errormsg.set("errorMsg", "this row contain more than Y");
+			}
 		
 	}
 	
