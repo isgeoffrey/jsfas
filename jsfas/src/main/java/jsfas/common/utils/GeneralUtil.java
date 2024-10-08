@@ -1013,6 +1013,13 @@ public class GeneralUtil {
 		
 	}
 	
+	public static Double initNullDouble(Double inputDouble) {
+		if (inputDouble == null) {
+			return  0.0;
+		}	
+		return inputDouble;
+	}
+	
 	/**
 	 * @param inputInteger
 	 * @return initialize null integer to ""
