@@ -20,6 +20,8 @@ import jsfas.db.main.persistence.service.RedisEventHandler;
 import jsfas.db.main.persistence.service.RedisService;
 
 import jsfas.db.main.persistence.service.StocktakeEventHandler;
+import jsfas.db.main.persistence.service.StocktakeExcelGenEventHandler;
+import jsfas.db.main.persistence.service.StocktakeExcelGenService;
 import jsfas.db.main.persistence.service.StocktakeService;
 import jsfas.db.main.persistence.service.StocktakeStagingService;
 import jsfas.db.main.persistence.service.StocktakeStagingEventHandler;
@@ -110,6 +112,11 @@ public class CoreConfig {
 	@Bean
 	public StocktakeStagingService stocktakeStagingService(){
 		return new StocktakeStagingEventHandler();
+	}
+
+	@Bean
+	public StocktakeExcelGenService stocktakeExcelGenService(){
+		return new StocktakeExcelGenEventHandler();
 	}
     
     // @Bean

@@ -21,6 +21,7 @@ import jsfas.common.constants.RestURIConstants;
 import jsfas.common.json.CommonJson;
 import jsfas.common.json.Response;
 import jsfas.common.utils.GeneralUtil;
+import jsfas.db.main.persistence.service.StocktakeExcelGenService;
 import jsfas.db.main.persistence.service.StocktakeService;
 import jsfas.db.main.persistence.service.StocktakeStagingService;
 
@@ -34,6 +35,9 @@ public class StocktakeController extends CommonApiController {
 
 	@Autowired
 	StocktakeStagingService stagingService;
+
+	@Autowired
+	StocktakeExcelGenService stockExcelService;
 
 
 	@RequestMapping(value = RestURIConstants.STK_PLAN_LIST, method=RequestMethod.POST)
@@ -74,6 +78,19 @@ public class StocktakeController extends CommonApiController {
 		return setSuccess(response);
 
 		
+	}
+
+	@RequestMapping(value = RestURIConstants.STK_PLAN_HDR, method = RequestMethod.GET)
+	public Response getStkPlanHdrById(HttpServletRequest request, @RequestParam Map<String,String> paramMap) throws Exception {
+		Response response = new Response();
+		
+		JSONObject requestParam = new JSONObject(paramMap);
+		
+		CommonJson data = new CommonJson().set("stkPlanHdr", 
+		GeneralUtil.jsonObjectToCommonJson(stocktakeService.getStocktakeHdrById(requestParam)));
+		
+		response.setData(data);
+		return setSuccess(response);
 	}
 
 	@RequestMapping(value = RestURIConstants.STK_PLAN_DTL_SUMMARY, method = RequestMethod.GET)
@@ -125,8 +142,6 @@ public class StocktakeController extends CommonApiController {
 		return setSuccess(response);
 	}
 	
-	
-
 	@RequestMapping(value = RestURIConstants.STK_PENDING, method = RequestMethod.GET)
 	public Response getStagingItemsById(HttpServletRequest request, @RequestParam Map<String,String> paramMap) throws Exception {
 		Response response = new Response();
@@ -170,6 +185,27 @@ public class StocktakeController extends CommonApiController {
 		CommonJson data = new CommonJson()
 		.set("stkItem", GeneralUtil.jsonObjectToCommonJson(stagingService.clearStagingByRow(GeneralUtil.commonJsonToJsonObject(inputJson))))
 		.set("stkPlanSummary", GeneralUtil.jsonObjectToCommonJson(stocktakeService.getSummaryOfStocktakeById(GeneralUtil.commonJsonToJsonObject(inputJson))));
+		
+		response.setData(data);
+		return setSuccess(response);
+	}
+
+	@RequestMapping(value = RestURIConstants.SUBMIT_STK_PLAN, method = RequestMethod.GET)
+	public Response submitStkPlanById(HttpServletRequest request, @RequestParam Map<String,String> paramMap) throws Exception {
+		Response response = new Response();
+		
+		JSONObject requestParam = new JSONObject(paramMap);
+		
+		// stockExcelService.commitAssetGeneration(requestParam);
+		return setSuccess(response);
+	}
+
+	@RequestMapping(value = RestURIConstants.UPDATE_STK_ITEM, method=RequestMethod.POST)
+	public Response updateDtlwithStagingItem(HttpServletRequest request, @RequestBody CommonJson inputJson) throws Exception {
+		Response response = new Response();
+		
+		CommonJson data = new CommonJson()
+		.set("stkPlanId", stagingService.updateDtlWithStgById(GeneralUtil.commonJsonToJsonObject(inputJson)));
 		
 		response.setData(data);
 		return setSuccess(response);

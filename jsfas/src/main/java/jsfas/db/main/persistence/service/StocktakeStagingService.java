@@ -12,4 +12,6 @@ public interface StocktakeStagingService {
 	JSONObject clearStagingByRow (JSONObject inputJson) throws Exception;
 
 	JSONObject deleteAllStagingById (JSONObject inputJson) throws Exception;
+
+	String updateDtlWithStgById (JSONObject inputJson) throws Exception;
 }

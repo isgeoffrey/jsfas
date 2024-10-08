@@ -2,18 +2,18 @@ package jsfas.db.main.persistence.service;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mchange.rmi.NotAuthorizedException;
 
 import java.util.List;
+import java.math.BigDecimal;
 
 import java.sql.Timestamp;
 
 import java.util.Map;
+import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import freemarker.core.Environment;
 import jsfas.common.utils.GeneralUtil;
 import jsfas.db.main.persistence.domain.FasStkPlanDtlDAO;
 import jsfas.db.main.persistence.domain.FasStkPlanDtlDAOPK;
@@ -25,6 +25,8 @@ import jsfas.db.main.persistence.repository.FasStkPlanHdrRepostiory;
 import jsfas.common.constants.StkPlanStatus;
 import jsfas.common.exception.InvalidParameterException;
 import jsfas.common.exception.RecordModifiedException;
+import jsfas.common.json.CommonJson;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -167,7 +169,7 @@ public class StocktakeEventHandler implements StocktakeService{
 		}else {
 
 			if (!stkPlan.getLockUser().equalsIgnoreCase(currentUser)){
-				throw new NotAuthorizedException("Plan may only unlocked by " + GeneralUtil.initBlankString(stkPlan.getLockUser()));
+				throw new Exception("Plan may only unlocked by " + GeneralUtil.initBlankString(stkPlan.getLockUser()));
 			}
 
 			stkPlan.setLockStatus("N");
@@ -241,6 +243,32 @@ public class StocktakeEventHandler implements StocktakeService{
 	}
 
 	@Override
+	public JSONObject getStocktakeHdrById(JSONObject inputJson)throws Exception {
+		JSONObject outputJson = new JSONObject(); 
+		// TO DO change hardcore user to SecurityUtil id
+		String currentUser = "isod01";	
+		String planId = inputJson.optString("stkPlanId");
+		
+		FasStkPlanHdrDAO stkHdr = stkPlanHdrRepository.findOne(planId);
+		if (stkHdr == null){
+			throw new InvalidParameterException("Stocktake Plan not found");
+		}
+
+		outputJson.put("stkPlanId",stkHdr.getStkPlanId())
+			.put("stkPlanSnapDat",stkHdr.getStkPlanSnapDat())
+			.put("stkPlanStatus",stkHdr.getStkPlanStatus())
+			.put("deptId",stkHdr.getCustDeptid())
+			.put("deptDescrShort",stkHdr.getCustDeptDescrShort())
+			.put("lockStatus",stkHdr.getLockStatus())
+			.put("lockUser",GeneralUtil.initNullString(stkHdr.getLockUser()))
+			.put("lockDat",stkHdr.getLockDat())
+			.put("creatDat",stkHdr.getCreatDat())
+			.put("modCtrlTxt", stkHdr.getModCtrlTxt());
+
+		return outputJson;
+	}
+
+	@Override
 	public JSONObject getSummaryOfStocktakeById(JSONObject inputJson) throws Exception {
 		JSONObject outputJSON = new JSONObject();
 		String planID = inputJson.optString("stkPlanId");
@@ -272,6 +300,7 @@ public class StocktakeEventHandler implements StocktakeService{
 		String assetId = inputJson.optString("assetId");
 		String modCtrlTxt = inputJson.optString("modCtrlTxt");
 		String stkStatus = inputJson.optString("stkStatus");
+		String opPageName = inputJson.optString("opPageName");
 
 		FasStkPlanDtlDAOPK stkItemDAOPK = new FasStkPlanDtlDAOPK();
 		stkItemDAOPK.setAssetId(assetId);
@@ -319,6 +348,25 @@ public class StocktakeEventHandler implements StocktakeService{
 
 		log.info("updateStocktakeByRow Success {} {} {}: ",stkItem.getFasStkPlanDtlDAOPK().getStkPlanId(),stkItem.getFasStkPlanDtlDAOPK().getBusinessUnit(),stkItem.getFasStkPlanDtlDAOPK().getAssetId());
 		
+		// Change stkPlanHdr Status on change
+		Map<String,Object> latestCount = stkPlanDtlRepository.findSumamryByPlanId(planID);
+		
+		FasStkPlanHdrDAO stkPlan = stkPlanHdrRepository.findOne(planID);
+		if (stkPlan == null){
+			throw new Exception("Stocktake Plan cannot be found");
+		}
+
+		stkPlan.setChngDat(GeneralUtil.getCurrentTimestamp());
+		stkPlan.setChngUser(currentUser);
+		stkPlan.setModCtrlTxt(GeneralUtil.genModCtrlTxt());
+		stkPlan.setOpPageNam(opPageName);
+
+		if (latestCount.get("pending") != null && GeneralUtil.initNullBigDecimal((BigDecimal)latestCount.get("pending")) == GeneralUtil.NULLBIGDECIMAL){
+			stkPlan.setStkPlanStatus(StkPlanStatus.READYFORSUBM);
+		}else if (latestCount.get("pending") != null && GeneralUtil.initNullBigDecimal((BigDecimal)latestCount.get("pending")) != GeneralUtil.NULLBIGDECIMAL){
+			stkPlan.setStkPlanStatus(StkPlanStatus.OPEN);
+		}
+
 		return outputJSON;
 	}
 
@@ -332,6 +380,7 @@ public class StocktakeEventHandler implements StocktakeService{
 		String buUnit = inputJson.optString("businessUnit");
 		String assetId = inputJson.optString("assetId");
 		String modCtrlTxt = inputJson.optString("modCtrlTxt");
+		String opPageName = inputJson.optString("opPageName");
 
 		FasStkPlanDtlDAOPK stkItemDAOPK = new FasStkPlanDtlDAOPK();
 		stkItemDAOPK.setAssetId(assetId);
@@ -378,9 +427,27 @@ public class StocktakeEventHandler implements StocktakeService{
 		.put("assetId",stkItem.getFasStkPlanDtlDAOPK().getAssetId());
 
 		log.info("clearStocktakeByRow Success {} {} {}: ",stkItem.getFasStkPlanDtlDAOPK().getStkPlanId(),stkItem.getFasStkPlanDtlDAOPK().getBusinessUnit(),stkItem.getFasStkPlanDtlDAOPK().getAssetId());
+		
+		// Change stkPlanHdr Status on change
+		Map<String,Object> latestCount = stkPlanDtlRepository.findSumamryByPlanId(planID);
+		
+		FasStkPlanHdrDAO stkPlan = stkPlanHdrRepository.findOne(planID);
+		if (stkPlan == null){
+			throw new Exception("Stocktake Plan cannot be found");
+		}
+
+		stkPlan.setChngDat(GeneralUtil.getCurrentTimestamp());
+		stkPlan.setChngUser(currentUser);
+		stkPlan.setModCtrlTxt(GeneralUtil.genModCtrlTxt());
+		stkPlan.setOpPageNam(opPageName);
+
+		if (latestCount.get("pending") != null && GeneralUtil.initNullBigDecimal((BigDecimal)latestCount.get("pending")) == GeneralUtil.NULLBIGDECIMAL){
+			stkPlan.setStkPlanStatus(StkPlanStatus.READYFORSUBM);
+		}else if (latestCount.get("pending") != null && GeneralUtil.initNullBigDecimal((BigDecimal)latestCount.get("pending")) != GeneralUtil.NULLBIGDECIMAL){
+			stkPlan.setStkPlanStatus(StkPlanStatus.OPEN);
+		}
+		
 		return outputJSON;
 	}
-
-
 
 }

@@ -34,6 +34,7 @@ public class RestURIConstants {
 	// Stocktake plan
 	public static final String STK_PLAN_LIST = "/stk_plan_list";
 	public static final String STK_PLAN = "/stk_plan";
+	public static final String STK_PLAN_HDR = "/stk_plan_hdr";
 	public static final String STK_PLAN_DTL_SUMMARY = "/stk_plan_dtl_summary";
 
 	public static final String STK_ITEM = "/stk_item";
@@ -44,5 +45,8 @@ public class RestURIConstants {
 	public static final String STK_PENDING = "/stk_pending";
 	public static final String STG_ITEM = "/stg_item";
 	public static final String STG_ITEM_CLEAR = "/stg_item_clear";	
+
+	public static final String SUBMIT_STK_PLAN = "/submit_stk_plan";
+	public static final String UPDATE_STK_ITEM = "/update_stk_item";
 }
 

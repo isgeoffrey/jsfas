@@ -2,7 +2,6 @@ package jsfas.db.main.persistence.service;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mchange.rmi.NotAuthorizedException;
 
 import java.util.List;
 
@@ -12,8 +11,8 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import java.math.BigDecimal;
 
-import freemarker.core.Environment;
 import jsfas.common.utils.GeneralUtil;
 import jsfas.db.main.persistence.domain.FasStkPlanDtlDAO;
 import jsfas.db.main.persistence.domain.FasStkPlanDtlDAOPK;
@@ -158,6 +157,7 @@ public class StocktakeStagingEventHandler implements StocktakeStagingService{
 	}
 
 	@Override
+	@Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
 	public JSONObject clearStagingByRow(JSONObject inputJson) throws Exception {
 		JSONObject outputJSON = new JSONObject();
 		String currentUser = "isod01";
@@ -226,6 +226,7 @@ public class StocktakeStagingEventHandler implements StocktakeStagingService{
 		.put("stgStkStatus",stgStkItem.getStkStatus());
 
 		log.info("clearStocktakeByRow Success {} {} {}: ",stkItem.getFasStkPlanDtlDAOPK().getStkPlanId(),stkItem.getFasStkPlanDtlDAOPK().getBusinessUnit(),stkItem.getFasStkPlanDtlDAOPK().getAssetId());
+		
 		return outputJSON;
 	}
 
@@ -233,23 +234,91 @@ public class StocktakeStagingEventHandler implements StocktakeStagingService{
 	@Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
 	public JSONObject deleteAllStagingById(JSONObject inputJson) throws Exception{
 		JSONObject outputJSON = new JSONObject();
+		
 		String currentUser = "isod01";
 		//to do remove hard code for currentUser, add validation to check if user can delete
 
-		String planID = inputJson.optString("id");
+		String planID = inputJson.optString("stkPlanId");
+		String opPageName = inputJson.optString("opPageName");
 
 		List<FasStkPlanDtlStgDAO> delItems = stkPlanDtlStgRepository.findAllDtlFromPlanId(planID);
-
-		// FasStkPlanHdrDAO stkPlan = stkPlanHdrRepository.deleteAll(null);
-
-		if (delItems.size()==0){
-			throw new InvalidParameterException("Stocktake plan not found in staging");
-		}
 
 		stkPlanDtlStgRepository.deleteAll(delItems);
 		
 
 		log.info("deleteAllStagingById Success: "+planID);
+
+		// Change stkPlanHdr Status on change
+		Map<String,Object> latestCount = stkPlanDtlRepository.findSumamryByPlanId(planID);
+		
+		FasStkPlanHdrDAO stkPlan = stkPlanHdrRepository.findOne(planID);
+		if (stkPlan == null){
+			throw new Exception("Stocktake Plan cannot be found");
+		}
+
+		stkPlan.setChngDat(GeneralUtil.getCurrentTimestamp());
+		stkPlan.setChngUser(currentUser);
+		stkPlan.setModCtrlTxt(GeneralUtil.genModCtrlTxt());
+		stkPlan.setOpPageNam(opPageName);
+
+		if (latestCount.get("pending") != null && GeneralUtil.initNullBigDecimal((BigDecimal)latestCount.get("pending")) == GeneralUtil.NULLBIGDECIMAL){
+			stkPlan.setStkPlanStatus(StkPlanStatus.READYFORSUBM);
+		}else if (latestCount.get("pending") != null && GeneralUtil.initNullBigDecimal((BigDecimal)latestCount.get("pending")) != GeneralUtil.NULLBIGDECIMAL){
+			stkPlan.setStkPlanStatus(StkPlanStatus.OPEN);
+		}
+
+		stkPlanHdrRepository.save(stkPlan);
 		return outputJSON;
 	}
+
+	@Override
+	@Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
+	public String updateDtlWithStgById (JSONObject inputJson) throws Exception{
+
+		String currentUser = "isod01";
+		String planID = inputJson.optString("stkPlanId");
+		String opPageName = inputJson.optString("opPageName");
+
+		List<FasStkPlanDtlStgDAO> delItems = stkPlanDtlStgRepository.findAllDtlFromPlanId(planID);
+
+		if (delItems.size()==0){
+			throw new InvalidParameterException("No Stocktake items not found in staging");
+		}
+
+		List<FasStkPlanDtlDAO> coercedDtl = stkPlanDtlRepository.coerceStgToDtlData(planID);
+
+		for (FasStkPlanDtlDAO dtl:coercedDtl){
+			dtl.setModCtrlTxt(GeneralUtil.genModCtrlTxt());
+			dtl.setChangeUser(currentUser);
+			dtl.setChangeDate(GeneralUtil.getCurrentTimestamp());
+			dtl.setOpPageName(opPageName);
+		}
+		
+
+		stkPlanDtlRepository.saveAll(coercedDtl);
+		stkPlanDtlStgRepository.deleteAll(delItems);
+
+		// Change stkPlanHdr Status on change
+		Map<String,Object> latestCount = stkPlanDtlRepository.findSumamryByPlanId(planID);
+		
+		FasStkPlanHdrDAO stkPlan = stkPlanHdrRepository.findOne(planID);
+		if (stkPlan == null){
+			throw new Exception("Stocktake Plan cannot be found");
+		}
+
+		stkPlan.setChngDat(GeneralUtil.getCurrentTimestamp());
+		stkPlan.setChngUser(currentUser);
+		stkPlan.setModCtrlTxt(GeneralUtil.genModCtrlTxt());
+		stkPlan.setOpPageNam(opPageName);
+
+		if (latestCount.get("pending") != null && (Integer)latestCount.get("pending")==0){
+			stkPlan.setStkPlanStatus(StkPlanStatus.READYFORSUBM);
+		}else if (latestCount.get("pending") != null && (Integer)latestCount.get("pending")>0){
+			stkPlan.setStkPlanStatus(StkPlanStatus.OPEN);
+		}
+
+		stkPlanHdrRepository.save(stkPlan);
+		return planID;
+	}
+
 }

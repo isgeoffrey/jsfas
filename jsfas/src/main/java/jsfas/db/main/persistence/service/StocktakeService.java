@@ -3,6 +3,8 @@ package jsfas.db.main.persistence.service;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import jsfas.common.json.CommonJson;
+
 public interface StocktakeService {
 
 	// summary page
@@ -14,6 +16,8 @@ public interface StocktakeService {
 
 	// view stocktake plan page
 	JSONObject getStocktakeById (JSONObject inputJson) throws Exception;
+
+	JSONObject getStocktakeHdrById (JSONObject inputJson) throws Exception;
 	
 	JSONObject getSummaryOfStocktakeById (JSONObject inputJson) throws Exception;
 
