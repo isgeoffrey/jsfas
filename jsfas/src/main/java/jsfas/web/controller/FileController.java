@@ -32,39 +32,4 @@ public class FileController extends CommonApiController {
 	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
-	@ResponseBody
-	@RequestMapping(value = RestURIConstants.FILES_BY_ID, method = RequestMethod.GET)
-	public Response getFile(HttpServletRequest request, HttpServletResponse response, @PathVariable(name="id") String id) throws Exception {
-		CommonJson outputFile = fileService.getAsset(id);
-	    
-	    if (outputFile.isEmpty()) {
-	    	Response jsonResponse = new Response();
-	    	jsonResponse.setMeta(ResponseCodeConstants.ERROR, "File not found!");
-	    	return jsonResponse;
-	    }
-	    
-	    String fileName = outputFile.get("file_name");
-	    String mimeType =  outputFile.get("file_type");
-		
-	    log.debug("outputFile: {}", outputFile.props());
-		
-	    response.setContentType(mimeType + "; name=\"" + StringEscapeUtils.escapeJava(fileName) + "\"");
-	    response.setHeader("Content-Disposition", "inline; filename=\"" + StringEscapeUtils.escapeJava(fileName) + "\"");
-	    byte[] fileByte = outputFile.get("file_content", byte[].class);
-	    
-	    FileCopyUtils.copy(fileByte, response.getOutputStream());
-	    
-		return null;
-	}
-	
-	@RequestMapping(value = RestURIConstants.FILES, method = RequestMethod.POST)
-	public Response addAsset(HttpServletRequest request, MultipartFile file) throws Exception {
-		Response response = new Response();
-			
-		CommonJson data = new CommonJson();
-		data.set("asset", fileService.insertAsset(file, getOpPageName(request)));
-		response.setData(data);
-		
-		return setSuccess(response);
-	}
 }

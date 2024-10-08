@@ -39,7 +39,7 @@ public interface FasStkPlanDtlRepository extends CommonRepository<FasStkPlanDtlD
 		"and stg.business_unit = dtl.business_unit "+
 		"and stg.asset_id = dtl.asset_id "+
 		"where dtl.stk_plan_id = :planID "+
-		// "and stg.stk_status != dtl.stk_status "+
+		"and stg.stk_status != dtl.stk_status "+
 		"and NVL(TRIM(stg.stk_status),' ') != ' '", nativeQuery = true)
 	List<Map<String,Object>> findDtlAndStagingOverlapFromPlanId(String planID);
 

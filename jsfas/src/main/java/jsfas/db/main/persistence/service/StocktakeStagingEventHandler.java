@@ -311,9 +311,9 @@ public class StocktakeStagingEventHandler implements StocktakeStagingService{
 		stkPlan.setModCtrlTxt(GeneralUtil.genModCtrlTxt());
 		stkPlan.setOpPageNam(opPageName);
 
-		if (latestCount.get("pending") != null && (Integer)latestCount.get("pending")==0){
+		if (latestCount.get("pending") != null && GeneralUtil.initNullBigDecimal((BigDecimal)latestCount.get("pending")) == GeneralUtil.NULLBIGDECIMAL){
 			stkPlan.setStkPlanStatus(StkPlanStatus.READYFORSUBM);
-		}else if (latestCount.get("pending") != null && (Integer)latestCount.get("pending")>0){
+		}else if (latestCount.get("pending") != null && GeneralUtil.initNullBigDecimal((BigDecimal)latestCount.get("pending")) != GeneralUtil.NULLBIGDECIMAL){
 			stkPlan.setStkPlanStatus(StkPlanStatus.OPEN);
 		}
 

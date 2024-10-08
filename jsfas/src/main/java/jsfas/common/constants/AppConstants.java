@@ -76,6 +76,7 @@ public class AppConstants {
 	public static final String RESPONSE_JSON_RECORD_EXIST = "402";
 	public static final String RESPONSE_JSON_RECORD_MODIFIED = "403";
 	public static final String RESPONSE_JSON_RECORD_REMOVED = "404";
+	public static final String RESPONSE_JSON_EXCEL_ERROR = "405";
 	
 	public static final String PRED_QUERY_PARAM_JSON = "JSON";
 	public static final String PRED_QUERY_SQL = "SQL";
