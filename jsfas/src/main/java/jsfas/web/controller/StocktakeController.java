@@ -2,9 +2,12 @@ package jsfas.web.controller;
 
 import java.util.Map;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
+import org.apache.commons.io.FileUtils;
+import java.io.File;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.core.env.Environment;
+import org.apache.commons.io.FilenameUtils;
 
 import jsfas.common.constants.RestURIConstants;
 import jsfas.common.json.CommonJson;
@@ -30,6 +36,8 @@ import jsfas.db.main.persistence.service.StocktakeStagingService;
 @ControllerAdvice
 public class StocktakeController extends CommonApiController {
 	
+	@Inject Environment env;
+
 	@Autowired
 	StocktakeService stocktakeService;
 
@@ -165,6 +173,29 @@ public class StocktakeController extends CommonApiController {
 		
 		return setSuccess(response);
 	}
+
+	@RequestMapping(value = RestURIConstants.STK_PENDING, method=RequestMethod.POST)
+	public Response uploadExcelToStaging(@RequestParam("file") MultipartFile uploadFile, @RequestParam("stkPlanId") String stkPlanId, @RequestParam("opPageName") String opPageName) throws Exception{
+		Response response = new Response();
+
+		String originalFileName = uploadFile.getOriginalFilename();
+		
+		String uploadFileName = FilenameUtils.getBaseName(originalFileName);
+		String uploadFileExt = FilenameUtils.getExtension(originalFileName);
+
+		File dir = new File(env.getProperty("downld.dir"));
+
+		File outputFile = new File(dir.getAbsolutePath() + File.separator
+				+ uploadFileName + "." + uploadFileExt);
+
+		FileUtils.writeByteArrayToFile(outputFile, uploadFile.getBytes());
+
+		System.out.println("stkPlanId: "+stkPlanId);
+		System.out.println("opPageName: "+opPageName);
+			
+		return setSuccess(response);
+	}
+	
 
 	@RequestMapping(value = RestURIConstants.STG_ITEM, method=RequestMethod.POST)
 	public Response updateStagingItemByRow(HttpServletRequest request, @RequestBody CommonJson inputJson) throws Exception {
