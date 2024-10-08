@@ -398,7 +398,7 @@ public class StocktakeEventHandler implements StocktakeService{
 			throw new InvalidParameterException("FileName do not exist");
 		}
 		
-		JSONArray uploadFileData= null;
+		List<List<Object>> uploadFileData= null;
 		// 1. get data from execl and put it in the jsonarray
 		try {
 			uploadFileData = getDataFromUploadFile(inputJson.get("FileName"));
@@ -429,97 +429,216 @@ public class StocktakeEventHandler implements StocktakeService{
 	}
 	
 	
-	private JSONArray getDataFromUploadFile(String FileName) throws JSONException{
+	private List<List<Object>> getDataFromUploadFile(String FileName) throws JSONException{
+			
+		List<List<Object>> reponseList = new ArrayList<List<Object>>();
+		
+		List<Object> header = new ArrayList<>();
+        header.add("Exist");
+        header.add("Not Exist");
+        header.add("Yet-to-be Located");
+        header.add("Custodian Department Code");
+        header.add("Custodian Department Description");
+        header.add("Business Unit");
+        header.add("Asset Profile ID");
+        header.add("Asset Profile Description");
+        header.add("Asset ID");
+        header.add("Detailed Item Description");
+        header.add("Total Cost");
+        header.add("Net Book Value");
+        header.add("Invoice Date");
+        header.add("PO / BR No.");
+        header.add("Region");
+        header.add("Not UST Property");
+        header.add("Donated Item");
+        header.add("Location");
+        header.add("Voucher ID");
+        header.add("Invoice ID");
+        
+        List<Object> headerError = new ArrayList<>(); // header has wrong format
+        headerError.add("Exist");
+        headerError.add("Not Exist");
+        headerError.add("Custodian Department Description");
+        headerError.add("Yet-to-be Located");
+        headerError.add("Custodian Department Code");
+        headerError.add("Business Unit");
+        headerError.add("Asset Profile ID");
+        headerError.add("Asset Profile Description");
+        headerError.add("Asset ID");
+        headerError.add("Detailed Item Description");
+        headerError.add("Total Cost");
+        headerError.add("Net Book Value");
+        headerError.add("Invoice Date");
+        headerError.add("PO / BR No.");
+        headerError.add("Region");
+        headerError.add("Not UST Property");
+        headerError.add("Donated Item");
+        headerError.add("Location");
+        headerError.add("Voucher ID");
+        headerError.add("Invoice ID");
+        
+        
+        List<Object> data1 = new ArrayList<>(); // correct data
+        data1.add("Y");
+        data1.add("");
+        data1.add("Y");
+        data1.add("abc");
+        data1.add("abc");
+        data1.add("abc");
+        data1.add("asset prof 1");
+        data1.add("asset descr 1");
+        data1.add("asset 1");
+        data1.add("lorem ispum");
+        data1.add(123);
+        data1.add(456);
+        data1.add("2024-10-17");
+        data1.add("PO 1");
+        data1.add("Hong Kong");
+        data1.add("N");
+        data1.add("N");
+        data1.add("LG7");
+        data1.add("Voucher 1");
+        data1.add("invoice 1");
+        
+        
+        List<Object> data2 = new ArrayList<>(); // More than one y and asset id is null
+        data2.add("Y");
+        data2.add("");
+        data2.add("abd");
+        data2.add("abc");
+        data2.add("abc");
+        data2.add("abc");
+        data2.add("asset prof 1");
+        data2.add("asset descr 1");
+        data2.add("asset 3");
+        data2.add("lorem ispum");
+        data2.add(123);
+        data2.add(456);
+        data2.add("2024-10-17");
+        data2.add("PO 1");
+        data2.add("Hong Kong");
+        data2.add("N");
+        data2.add("N");
+        data2.add("LG7");
+        data2.add("Voucher 1");
+        data2.add("invoice 1");
+        
+        List<Object> data3 = new ArrayList<>(); // business unit is empty
+        data3.add("");
+        data3.add("");
+        data3.add("Y");
+        data3.add("abc");
+        data3.add("abc");
+        data3.add("");
+        data3.add("asset prof 1");
+        data3.add("asset descr 1");
+        data3.add(null);
+        data3.add("lorem ispum");
+        data3.add(123);
+        data3.add(456);
+        data3.add("2024-10-17");
+        data3.add("PO 1");
+        data3.add("Hong Kong");
+        data3.add("N");
+        data3.add("N");
+        data3.add("LG7");
+        data3.add("Voucher 1");
+        data3.add("invoice 1");
+        
+		
+        reponseList.add(header);
+        reponseList.add(data1);
+        reponseList.add(data2);
+        reponseList.add(data3);
 		
 		
-		JSONArray reponsearray = new JSONArray();
-		JSONObject data1 = new JSONObject();
-		JSONObject data2 = new JSONObject();
-		data1
-			.put("STK_PLAN_ID", "123e4567-e89b-12d3-a456-426614174000")
-			.put("poId","PO_001")
-			.put("Exist","")
-			.put("Not Exist", "Y")
-			.put("Yet-to-be Located", "")
-			.put("Business_Unit", "BU1")
-			.put("ASSET_ID", "ASSET_001");
-		data2
-			.put("STK_PLAN_ID", "123e4567-e89b-12d3-a456-426614174000")
-			.put("poId","PO_002")
-			.put("Exist","Y")
-			.put("Not Exist", "")
-			.put("Yet-to-be Located", "")
-			.put("Business_Unit", "BU1")
-			.put("ASSET_ID", "ASSET_003");
-		
-		reponsearray.put(data1);
-		reponsearray.put(data2);
-		
-		
-		return reponsearray;
+		return reponseList;
 		
 	}
 	
-	private void validateUploadData(JSONArray uploadFileData, List<CommonJson> excelErrorList) {
+	private void validateUploadData(List<List<Object>> uploadFileData, List<CommonJson> excelErrorList) throws ErrorDataArrayException {
 		
 		if (excelErrorList == null) {
 			excelErrorList = new ArrayList<>();
 		}
-	
-		for (int i = 0; i < uploadFileData.length();i++) {
-			try {
-			JSONObject dataJSON = uploadFileData.getJSONObject(i);
-			String Exist =  dataJSON.getString("Exist");
-			String Yet_to_be_Located =  dataJSON.getString("Yet-to-be Located");
-			String Not_Exist =  dataJSON.getString("Not Exist");
+		List<Object> headerList = uploadFileData.get(0);
+		if (headerList.get(0)=="Exist" && headerList.get(1)== "Not Exist" &&
+			headerList.get(2)== "Yet-to-be Located"&& headerList.get(5)== "Business Unit"&& headerList.get(8)== "Asset ID") {
 			
-			int Y = 0;
-			if (!(Exist.equals("Y")||Exist.equals("")) ){
-				CommonJson errormsg = new CommonJson();
-				errormsg.set("rowNumber", i);
-				errormsg.set("cell_name", "Exist");
-				errormsg.set("errorMsg", "this field is not Y or empty");
-				excelErrorList.add(errormsg);
-			}else if(Exist.equals("Y")) {
-				Y++;
+			for (int i = 1; i < uploadFileData.size();i++) {
+				try {
+				List<Object> datarow = uploadFileData.get(i);
+				Object Exist =  datarow.get(0);
+				Object Yet_to_be_Located =  datarow.get(2);
+				Object Not_Exist =  datarow.get(1);
+				Object Business_Unit = datarow.get(5);
+				Object Asset_ID = datarow.get(8);
+				
+				int Y = 0;
+				if (!(Exist.equals("Y")||Exist.equals("")||Exist.equals("N")) ){
+					CommonJson errormsg = new CommonJson();
+					errormsg.set("rowNumber", i);
+					errormsg.set("cell_name", "Exist");
+					errormsg.set("errorMsg", "this field is not Y or N or empty");
+					excelErrorList.add(errormsg);
+				}else if(Exist.equals("Y")) {
+					Y++;
+				}
+				if (!(Yet_to_be_Located.equals("Y")||Yet_to_be_Located.equals("")||Yet_to_be_Located.equals("N")) ){
+					CommonJson errormsg = new CommonJson();
+					errormsg.set("rowNumber", i);
+					errormsg.set("cell_name", "Yet_to_be_Located");
+					errormsg.set("errorMsg", "this field is not Y or N or empty");
+					excelErrorList.add(errormsg);
+				} else if(Yet_to_be_Located.equals("Y")) {
+					Y++;
+				}
+				if (!(Not_Exist.equals("Y")||Not_Exist.equals("")||Not_Exist.equals("N")) ){
+					CommonJson errormsg = new CommonJson();
+					errormsg.set("rowNumber", i);
+					errormsg.set("cell_name", "Not_Exist");
+					errormsg.set("errorMsg", "this field is not Y or N or empty");
+					excelErrorList.add(errormsg);
+				}else if(Not_Exist.equals("Y")) {
+					Y++;
+				}
+				if (Y>1) {
+					CommonJson errormsg = new CommonJson();
+					errormsg.set("rowNumber", i);
+					errormsg.set("errorMsg", "this row have more than one 'Y' ");
+					excelErrorList.add(errormsg);
+				}
+				if (Business_Unit == null|| Business_Unit.toString().isBlank()) {
+					CommonJson errormsg = new CommonJson();
+					errormsg.set("rowNumber", i);
+					errormsg.set("cell_name", "Business Unit");
+					errormsg.set("errorMsg", "Business Unit is blank or not exist ");
+					excelErrorList.add(errormsg);
+				}
+				if (Asset_ID == null || Asset_ID.toString().isBlank()) {
+					CommonJson errormsg = new CommonJson();
+					errormsg.set("rowNumber", i);
+					errormsg.set("cell_name", "Asset ID");
+					errormsg.set("errorMsg", "Asset ID is blank or not exist ");
+					excelErrorList.add(errormsg);
+				}
+				
+				
+				}catch(Exception e) {
+					log.info(e.getMessage());
+				}
 			}
-			if (!(Yet_to_be_Located.equals("Y")||Yet_to_be_Located.equals("")) ){
-				CommonJson errormsg = new CommonJson();
-				errormsg.set("rowNumber", i);
-				errormsg.set("cell_name", "Yet_to_be_Located");
-				errormsg.set("errorMsg", "this field is not Y or empty");
-				excelErrorList.add(errormsg);
-			} else if(Yet_to_be_Located.equals("Y")) {
-				Y++;
-			}
-			if (!(Not_Exist.equals("Y")||Not_Exist.equals("")) ){
-				CommonJson errormsg = new CommonJson();
-				errormsg.set("rowNumber", i);
-				errormsg.set("cell_name", "Not_Exist");
-				errormsg.set("errorMsg", "this field is not Y or empty");
-				excelErrorList.add(errormsg);
-			}else if(Not_Exist.equals("Y")) {
-				Y++;
-			}
-			if (Y>1) {
-				CommonJson errormsg = new CommonJson();
-				errormsg.set("rowNumber", i);
-				errormsg.set("errorMsg", "more than one column contan 'Y' ");
-				excelErrorList.add(errormsg);
-			}
-			}catch(Exception e) {
-				log.info(e.getMessage());
-			}
-	}
-
+		}else {
+			throw new ErrorDataArrayException("The header format incorrect!");
+		}
 	}
 	
 	
-	private void insertUploadedData (JSONArray uploadFileData, String opPageName) throws JSONException, ErrorDataArrayException {
+	private void insertUploadedData (List<List<Object>> uploadFileData, String opPageName) throws JSONException, ErrorDataArrayException {
 		String currentUser = "isod01";
-		List<FasStkPlanDtlStgDAO> saveDaoList = new ArrayList();
+		List<FasStkPlanDtlStgDAO> saveDaoList = new ArrayList<>();
 		try {
-			for (int i = 0; i < uploadFileData.length();i++) {
+			for (int i = 1; i < uploadFileData.size();i++) {
 				String modCtrlTxt = GeneralUtil.genModCtrlTxt();
 				Timestamp currentTimestamp = GeneralUtil.getCurrentTimestamp();
 
@@ -528,13 +647,13 @@ public class StocktakeEventHandler implements StocktakeService{
 				FasStkPlanDtlStgDAO FfasStkPlanDtlStgDAO = new FasStkPlanDtlStgDAO();
 				FasStkPlanDtlStgDAOPK fasStkPlanDtlStgDAOPK = new FasStkPlanDtlStgDAOPK();
 	
-				JSONObject dataJson = uploadFileData.getJSONObject(i);
-				fasStkPlanDtlStgDAOPK.setAssetId(dataJson.getString("ASSET_ID"));
-				fasStkPlanDtlStgDAOPK.setAssetId(dataJson.getString("Business_Unit"));
-				fasStkPlanDtlStgDAOPK.setAssetId(dataJson.getString("STK_PLAN_ID"));
+				List<Object> datarow = uploadFileData.get(i);
+			//	fasStkPlanDtlStgDAOPK.setAssetId(datarow.getString("ASSET_ID"));
+			//	fasStkPlanDtlStgDAOPK.setAssetId(datarow.getString("Business_Unit"));
+			//	fasStkPlanDtlStgDAOPK.setAssetId(datarow.getString("STK_PLAN_ID"));
 				
-				FfasStkPlanDtlStgDAO.setFasStkPlanDtlStgDAOPK(fasStkPlanDtlStgDAOPK);
-				FfasStkPlanDtlStgDAO.setPoId(dataJson.getString("poId"));
+			//	FfasStkPlanDtlStgDAO.setFasStkPlanDtlStgDAOPK(fasStkPlanDtlStgDAOPK);
+			//	FfasStkPlanDtlStgDAO.setPoId(datarow.getString("poId"));
 			//	FfasStkPlanDtlStgDAO.setAssetDescrLong(null);
 //				FfasStkPlanDtlStgDAO.setDonationFlag(null);
 //				FfasStkPlanDtlStgDAO.setInvoiceDt(null);
@@ -558,9 +677,9 @@ public class StocktakeEventHandler implements StocktakeService{
 				
 				
 				
-				String Exist =  dataJson.getString("Exist");
-				String Yet_to_be_Located =  dataJson.getString("Yet-to-be Located");
-				String Not_Exist =  dataJson.getString("Not Exist");
+				Object Exist =  datarow.get(0);
+				Object Yet_to_be_Located =  datarow.get(2);
+				Object Not_Exist =  datarow.get(1);
 				
 				if (Exist.equals("Y")) {
 					FfasStkPlanDtlStgDAO.setStkStatus("E");
