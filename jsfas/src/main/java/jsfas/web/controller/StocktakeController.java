@@ -197,7 +197,12 @@ public class StocktakeController extends CommonApiController {
 
 		// System.out.println("stkPlanId: "+stkPlanId);
 		// System.out.println("opPageName: "+opPageName);
-		stockExcelService.insertExcelToStaging(uploadFile, stkPlanId, opPageName);
+		
+		CommonJson data = new CommonJson()
+		.set("pending", GeneralUtil.jsonObjectToCommonJson(stockExcelService.insertExcelToStaging(uploadFile, stkPlanId, opPageName)));
+		
+		response.setData(data);
+		
 			
 		return setSuccess(response);
 	}

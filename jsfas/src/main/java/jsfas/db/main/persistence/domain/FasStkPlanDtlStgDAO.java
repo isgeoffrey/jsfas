@@ -91,51 +91,14 @@ public class FasStkPlanDtlStgDAO implements Serializable, Comparable<FasStkPlanD
 		super();
 	}
 
-	public FasStkPlanDtlStgDAO(FasStkPlanDtlDAO stkplanDtl, FasStkPlanDtlStgDAOPK stgDAOPK){
-		// super();
-		// FasStkPlanDtlStgDAOPK daopk = new FasStkPlanDtlStgDAOPK();
-		// daopk.setAssetId(stkplanDtl.getFasStkPlanDtlDAOPK().getAssetId());
-		// daopk.setBusinessUnit(stkplanDtl.getFasStkPlanDtlDAOPK().getBusinessUnit());
-		// daopk.setStkPlanId(stkplanDtl.getFasStkPlanDtlDAOPK().getStkPlanId());
+	public FasStkPlanDtlStgDAO(FasStkPlanDtlDAO stkplanDtl, String stkStatus){
+		super();
+		FasStkPlanDtlStgDAOPK daopk = new FasStkPlanDtlStgDAOPK();
+		daopk.setAssetId(stkplanDtl.getFasStkPlanDtlDAOPK().getAssetId());
+		daopk.setBusinessUnit(stkplanDtl.getFasStkPlanDtlDAOPK().getBusinessUnit());
+		daopk.setStkPlanId(stkplanDtl.getFasStkPlanDtlDAOPK().getStkPlanId());
 
-		this.fasStkPlanDtlStgDAOPK = stgDAOPK;
-
-		this.fasStkPlanDtlStgDAOPK.setAssetId(stkplanDtl.getFasStkPlanDtlDAOPK().getAssetId());
-		this.fasStkPlanDtlStgDAOPK.setBusinessUnit(stkplanDtl.getFasStkPlanDtlDAOPK().getBusinessUnit());
-		this.fasStkPlanDtlStgDAOPK.setStkPlanId(stkplanDtl.getFasStkPlanDtlDAOPK().getStkPlanId());
-
-		this.profileId = stkplanDtl.getProfileId();
-		this.profileDescr = stkplanDtl.getProfileDescr();
-		this.assetDescrLong = stkplanDtl.getAssetDescrLong();
-		this.totalCost = stkplanDtl.getTotalCost();
-		this.nbv = stkplanDtl.getNbv();
-		this.voucherId = stkplanDtl.getVoucherId();
-		this.invoiceId = stkplanDtl.getInvoiceId();
-		this.invoiceDt = stkplanDtl.getInvoiceDt();
-		this.poId = stkplanDtl.getPoId();
-		this.regionName = stkplanDtl.getRegionName();
-		this.notUstProprty = stkplanDtl.getNotUstProprty();
-		this.donationFlag = stkplanDtl.getDonationFlag();
-		this.location = stkplanDtl.getLocation();
-		
-		this.stkStatus = stkplanDtl.getStkStatus();
-		
-		this.modCtrlTxt = GeneralUtil.genModCtrlTxt();
-		this.createUser = "isod01"; // change to security utils
-		this.createDate = GeneralUtil.getCurrentTimestamp();
-		this.changeUser = "isod01"; // change to security utils
-		this.changeDate = GeneralUtil.getCurrentTimestamp();
-		this.opPageName = " ";
-	}
-
-	public FasStkPlanDtlStgDAO(FasStkPlanDtlDAO stkplanDtl, FasStkPlanDtlStgDAOPK stgDAOPK, String stkStatus){
-		// super();
-		// FasStkPlanDtlStgDAOPK daopk = new FasStkPlanDtlStgDAOPK();
-		// daopk.setAssetId(stkplanDtl.getFasStkPlanDtlDAOPK().getAssetId());
-		// daopk.setBusinessUnit(stkplanDtl.getFasStkPlanDtlDAOPK().getBusinessUnit());
-		// daopk.setStkPlanId(stkplanDtl.getFasStkPlanDtlDAOPK().getStkPlanId());
-
-		this.fasStkPlanDtlStgDAOPK = stgDAOPK;
+		this.fasStkPlanDtlStgDAOPK = daopk;
 
 		this.fasStkPlanDtlStgDAOPK.setAssetId(stkplanDtl.getFasStkPlanDtlDAOPK().getAssetId());
 		this.fasStkPlanDtlStgDAOPK.setBusinessUnit(stkplanDtl.getFasStkPlanDtlDAOPK().getBusinessUnit());
@@ -156,6 +119,43 @@ public class FasStkPlanDtlStgDAO implements Serializable, Comparable<FasStkPlanD
 		this.location = stkplanDtl.getLocation();
 		
 		this.stkStatus = stkStatus;
+		
+		this.modCtrlTxt = GeneralUtil.genModCtrlTxt();
+		this.createUser = "isod01"; // change to security utils
+		this.createDate = GeneralUtil.getCurrentTimestamp();
+		this.changeUser = "isod01"; // change to security utils
+		this.changeDate = GeneralUtil.getCurrentTimestamp();
+		this.opPageName = " ";
+	}
+
+	public FasStkPlanDtlStgDAO(FasStkPlanDtlDAO stkplanDtl){
+		super();
+		FasStkPlanDtlStgDAOPK daopk = new FasStkPlanDtlStgDAOPK();
+		daopk.setAssetId(stkplanDtl.getFasStkPlanDtlDAOPK().getAssetId());
+		daopk.setBusinessUnit(stkplanDtl.getFasStkPlanDtlDAOPK().getBusinessUnit());
+		daopk.setStkPlanId(stkplanDtl.getFasStkPlanDtlDAOPK().getStkPlanId());
+
+		this.fasStkPlanDtlStgDAOPK = daopk;
+
+		this.fasStkPlanDtlStgDAOPK.setAssetId(stkplanDtl.getFasStkPlanDtlDAOPK().getAssetId());
+		this.fasStkPlanDtlStgDAOPK.setBusinessUnit(stkplanDtl.getFasStkPlanDtlDAOPK().getBusinessUnit());
+		this.fasStkPlanDtlStgDAOPK.setStkPlanId(stkplanDtl.getFasStkPlanDtlDAOPK().getStkPlanId());
+
+		this.profileId = stkplanDtl.getProfileId();
+		this.profileDescr = stkplanDtl.getProfileDescr();
+		this.assetDescrLong = stkplanDtl.getAssetDescrLong();
+		this.totalCost = stkplanDtl.getTotalCost();
+		this.nbv = stkplanDtl.getNbv();
+		this.voucherId = stkplanDtl.getVoucherId();
+		this.invoiceId = stkplanDtl.getInvoiceId();
+		this.invoiceDt = stkplanDtl.getInvoiceDt();
+		this.poId = stkplanDtl.getPoId();
+		this.regionName = stkplanDtl.getRegionName();
+		this.notUstProprty = stkplanDtl.getNotUstProprty();
+		this.donationFlag = stkplanDtl.getDonationFlag();
+		this.location = stkplanDtl.getLocation();
+		
+		this.stkStatus = stkplanDtl.getStkStatus();
 		
 		this.modCtrlTxt = GeneralUtil.genModCtrlTxt();
 		this.createUser = "isod01"; // change to security utils

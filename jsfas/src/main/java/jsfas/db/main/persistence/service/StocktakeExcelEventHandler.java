@@ -236,7 +236,8 @@ public class StocktakeExcelEventHandler implements StocktakeExcelService {
 			}
 
 			stkPlanHdrRepository.save(stkPlan);
-				return outputJson;
+			outputJson.put("pending", latestCount.get("pending"));
+			return outputJson;
 		}
 
 	}
@@ -443,11 +444,12 @@ public class StocktakeExcelEventHandler implements StocktakeExcelService {
 						.set("errorMsg", "Row "+row+" Does not contain a valid Stock Item, please check \"Asset Id\", \"Business Unit\""));
 				}else{
 					if (!currentStkStatus.trim().isEmpty()){
-						FasStkPlanDtlStgDAOPK stgDAOPK = new FasStkPlanDtlStgDAOPK();
-						stgDAOPK.setAssetId(assetId);
-						stgDAOPK.setBusinessUnit(businessUnit);
-						stgDAOPK.setStkPlanId(stkPlanId);
-						stgDAOList.add(new FasStkPlanDtlStgDAO(stkPlanDtl, stgDAOPK ,currentStkStatus));
+						// FasStkPlanDtlStgDAOPK stgDAOPK = new FasStkPlanDtlStgDAOPK();
+						// stgDAOPK.setAssetId(assetId);
+						// stgDAOPK.setBusinessUnit(businessUnit);
+						// stgDAOPK.setStkPlanId(stkPlanId);
+						// stgDAOList.add(new FasStkPlanDtlStgDAO(stkPlanDtl, stgDAOPK ,currentStkStatus));
+						stgDAOList.add(new FasStkPlanDtlStgDAO(stkPlanDtl, currentStkStatus));
 					}
 				}
 			} catch (Exception e) {
