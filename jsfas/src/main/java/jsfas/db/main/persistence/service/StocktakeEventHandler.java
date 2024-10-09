@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.mchange.rmi.NotAuthorizedException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.io.File;
@@ -18,6 +19,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -39,6 +41,9 @@ import jsfas.db.main.persistence.repository.FasStkPlanDtlStgRepository;
 import jsfas.db.main.persistence.repository.FasStkPlanHdrRepostiory;
 import jsfas.common.excel.XLSReader.FileFormatInvalidException;
 import jsfas.common.excel.XCol;
+import jsfas.common.excel.XCDbl;
+import jsfas.common.excel.XCStr;
+import jsfas.common.excel.XCTime;
 import jsfas.common.excel.XLSReader;
 import jsfas.common.constants.AppConstants;
 import jsfas.common.constants.StkPlanStatus;
@@ -453,170 +458,208 @@ public class StocktakeEventHandler implements StocktakeService{
 	private ArrayList<HashMap<String, Object>> getDataFromUploadFile(MultipartFile uploadFile) throws IOException, InvalidParameterException{
 			
 		List<Map<String,Object>> reponseList = new ArrayList<Map<String,Object>>();
-		String uploadFileName = uploadFile.getOriginalFilename();
+		String originalFileName = uploadFile.getOriginalFilename();
+		
+		// remove file extension
+		// String uploadFileName = FilenameUtils.getBaseName(originalFileName);
+		String time_str = GeneralUtil.genModCtrlTxt();
 		
 		String currentUser = "isod01";
-		log.info(uploadFileName);
-		File FiletoGetData = new File ("C:\\tmp\\fas\\upload_excel\\temp"+ File.separator + GeneralUtil.getCurrentTimestamp()+ currentUser+ uploadFileName);
 		
+		File outputFileDir = new File ("C:\\tmp\\fas\\upload_excel\\temp" + File.separator + currentUser);
+		if (!outputFileDir.exists()) {
+			outputFileDir.mkdirs();
+		}
+		File outputFile = new File(outputFileDir.getAbsolutePath() + File.separator	+ time_str + "_" + originalFileName );
+			
+		FileUtils.writeByteArrayToFile(outputFile, uploadFile.getBytes());
+		String outputFileName = outputFile.getName();
+		
+		log.info(outputFileName);
 
-		if(!uploadFileName.toLowerCase().endsWith(".xlsx") && !uploadFileName.toLowerCase().endsWith(".xls")) {
-			throw new FileFormatInvalidException(uploadFileName);
+		if(!outputFileName.toLowerCase().endsWith(".xlsx") && !outputFileName.toLowerCase().endsWith(".xls")) {
+			throw new FileFormatInvalidException(outputFileName);
 		}
 		
 		
-		if (!FiletoGetData.exists()) {
-			throw new FileNotFoundException(uploadFileName);
+		if (!outputFile.exists()) {
+			throw new FileNotFoundException(outputFileName);
 		}
+
 		ArrayList<XCol> uploadFileColList = new ArrayList<>();
+		uploadFileColList.add(new XCStr(0,"Exist"));
+		uploadFileColList.add(new XCStr(1,"Not Exist"));
+		uploadFileColList.add(new XCStr(2,"Yet-to-be Located"));
+		uploadFileColList.add(new XCStr(3,"Custodian Department Code"));
+		uploadFileColList.add(new XCStr(4,"Custodian Department Description"));
+		uploadFileColList.add(new XCStr(5,"Business Unit"));
+		uploadFileColList.add(new XCStr(6,"Asset Profile ID"));
+		uploadFileColList.add(new XCStr(7,"Asset Profile Description"));
+		uploadFileColList.add(new XCStr(8,"Asset ID"));
+		uploadFileColList.add(new XCStr(9,"Detailed Item Description"));
+		uploadFileColList.add(new XCDbl(10,"Total Cost"));
+		uploadFileColList.add(new XCDbl(11,"Net Book Value"));
+		uploadFileColList.add(new XCTime(12,"Invoice Date"));
+		uploadFileColList.add(new XCStr(13,"PO / BR No."));
+		uploadFileColList.add(new XCStr(14,"Region"));
+		uploadFileColList.add(new XCStr(15,"Not UST Property"));
+		uploadFileColList.add(new XCStr(16,"Donated Item"));
+		uploadFileColList.add(new XCStr(17,"Location"));
+		uploadFileColList.add(new XCStr(18,"Voucher ID"));
+		uploadFileColList.add(new XCStr(19,"Invoice ID"));
+		
+		
 		ArrayList<HashMap<String, Object>> data = new ArrayList<HashMap<String, Object>>();
 		
-		if(FiletoGetData.getName().toLowerCase().endsWith(".xls")) {
-			try (HSSFWorkbook wb = XLSReader.getWorkbook(FileUtils.readFileToByteArray(FiletoGetData))) {				
+		if(outputFileName.toLowerCase().endsWith(".xls")) {
+			try (HSSFWorkbook wb = XLSReader.getWorkbook(FileUtils.readFileToByteArray(outputFile))) {				
 				HSSFSheet ws = wb.getSheetAt(0);
 				data = XLSReader.read(uploadFileColList, 0, ws);
 			}
-		}else if (FiletoGetData.getName().toLowerCase().endsWith(".xlsx")) {
-			try (XSSFWorkbook wb = XLSReader.getXSSFWorkbook(FileUtils.readFileToByteArray(FiletoGetData))) {
+		}else if (outputFileName.toLowerCase().endsWith(".xlsx")) {
+			try (XSSFWorkbook wb = XLSReader.getXSSFWorkbook(FileUtils.readFileToByteArray(outputFile))) {
 				XSSFSheet ws = wb.getSheetAt(0);
 				data = XLSReader.readXSSF(uploadFileColList, 0, ws);
 			}
 		}
 		
 		
-		Map<String, Object> header = new HashMap<>();
-        header.put("Exist", "Exist");
-        header.put("Not Exist", "Not Exist");
-        header.put("Yet-to-be Located", "Yet-to-be Located");
-        header.put("Custodian Department Code", "Custodian Department Code");
-        header.put("Custodian Department Description", "Custodian Department Description");
-        header.put("Business Unit", "Business Unit");
-        header.put("Asset Profile ID", "Asset Profile ID");
-        header.put("Asset Profile Description", "Asset Profile Description");
-        header.put("Asset ID", "Asset ID");
-        header.put("Detailed Item Description", "Detailed Item Description");
-        header.put("Total Cost", "Total Cost");
-        header.put("Net Book Value", "Net Book Value");
-        header.put("Invoice Date", "Invoice Date");
-        header.put("PO / BR No.", "PO / BR No.");
-        header.put("Region", "Region");
-        header.put("Not UST Property", "Not UST Property");
-        header.put("Donated Item", "Donated Item");
-        header.put("Location", "Location");
-        header.put("Voucher ID", "Voucher ID");
-        header.put("Invoice ID", "Invoice ID");
-        
-        List<Object> headerError = new ArrayList<>(); // header has wrong format
-        headerError.add("Exist");
-        headerError.add("Not Exist");
-        headerError.add("Custodian Department Description");
-        headerError.add("Yet-to-be Located");
-        headerError.add("Custodian Department Code");
-        headerError.add("Business Unit");
-        headerError.add("Asset Profile ID");
-        headerError.add("Asset Profile Description");
-        headerError.add("Asset ID");
-        headerError.add("Detailed Item Description");
-        headerError.add("Total Cost");
-        headerError.add("Net Book Value");
-        headerError.add("Invoice Date");
-        headerError.add("PO / BR No.");
-        headerError.add("Region");
-        headerError.add("Not UST Property");
-        headerError.add("Donated Item");
-        headerError.add("Location");
-        headerError.add("Voucher ID");
-        headerError.add("Invoice ID");
-        
-        
-        Map<String, Object> data1 = new HashMap<>(); // correct data
-        data1.put("Exist", "Y");
-        data1.put("Not Exist", "");
-        data1.put("Yet-to-be Located", "");
-        data1.put("Custodian Department Code", "abc");
-        data1.put("Custodian Department Description", "abc");
-        data1.put("Business Unit", "BU1");
-        data1.put("Asset Profile ID", "asset prof 1");
-        data1.put("Asset Profile Description", "asset descr 1");
-        data1.put("Asset ID", "ASSET_001");
-        data1.put("Detailed Item Description", "lorem ispum");
-        data1.put("Total Cost", 123.1);
-        data1.put("Net Book Value", 456.8);
-        data1.put("Invoice Date", "2024-10-17");
-        data1.put("PO / BR No.", "PO 1");
-        data1.put("Region", "Hong Kong");
-        data1.put("Not UST Property", "N");
-        data1.put("Donated Item", "N");
-        data1.put("Location", "LG7");
-        data1.put("Voucher ID", "Voucher 1");
-        data1.put("Invoice ID", "invoice 1");
-
-        
-        
-        Map<String, Object> data2 = new HashMap<>(); // More than one y and asset id is null
-        data2.put("Exist", "");
-        data2.put("Not Exist", "Y");
-        data2.put("Yet-to-be Located", "");
-        data2.put("Custodian Department Code", "abc");
-        data2.put("Custodian Department Description", "abc");
-        data2.put("Business Unit", "BU1");
-        data2.put("Asset Profile ID", "asset prof 1");
-        data2.put("Asset Profile Description", "asset descr 1");
-        data2.put("Asset ID", "ASSET_003");
-        data2.put("Detailed Item Description", "lorem ispum");
-        data2.put("Total Cost", 123.1);
-        data2.put("Net Book Value", 456.8);
-        data2.put("Invoice Date", "2024-10-17");
-        data2.put("PO / BR No.", "PO 1");
-        data2.put("Region", "Hong Kong");
-        data2.put("Not UST Property", "N");
-        data2.put("Donated Item", "N");
-        data2.put("Location", "LG7");
-        data2.put("Voucher ID", "Voucher 1");
-        data2.put("Invoice ID", "invoice 1");
-
-        Map<String, Object> data3 = new HashMap<>(); // business unit is empty
-        data3.put("Exist", "");
-        data3.put("Not Exist", "");
-        data3.put("Yet-to-be Located", "");
-        data3.put("Custodian Department Code", "abc");
-        data3.put("Custodian Department Description", "abc");
-        data3.put("Business Unit", "BU1");
-        data3.put("Asset Profile ID", "asset prof 1");
-        data3.put("Asset Profile Description", "asset descr 1");
-        data3.put("Asset ID", "ASSET_005");
-        data3.put("Detailed Item Description", "lorem ispum");
-        data3.put("Total Cost", 123.1);
-        data3.put("Net Book Value", 456.8);
-        data3.put("Invoice Date", "2024-10-17");
-        data3.put("PO / BR No.", "PO 1");
-        data3.put("Region", "Hong Kong");
-        data3.put("Not UST Property", "N");
-        data3.put("Donated Item", "N");
-        data3.put("Location", "LG7");
-        data3.put("Voucher ID", "Voucher 1");
-        data3.put("Invoice ID", "invoice 1");
-  
+//		Map<String, Object> header = new HashMap<>();
+//        header.put("Exist", "Exist");
+//        header.put("Not Exist", "Not Exist");
+//        header.put("Yet-to-be Located", "Yet-to-be Located");
+//        header.put("Custodian Department Code", "Custodian Department Code");
+//        header.put("Custodian Department Description", "Custodian Department Description");
+//        header.put("Business Unit", "Business Unit");
+//        header.put("Asset Profile ID", "Asset Profile ID");
+//        header.put("Asset Profile Description", "Asset Profile Description");
+//        header.put("Asset ID", "Asset ID");
+//        header.put("Detailed Item Description", "Detailed Item Description");
+//        header.put("Total Cost", "Total Cost");
+//        header.put("Net Book Value", "Net Book Value");
+//        header.put("Invoice Date", "Invoice Date");
+//        header.put("PO / BR No.", "PO / BR No.");
+//        header.put("Region", "Region");
+//        header.put("Not UST Property", "Not UST Property");
+//        header.put("Donated Item", "Donated Item");
+//        header.put("Location", "Location");
+//        header.put("Voucher ID", "Voucher ID");
+//        header.put("Invoice ID", "Invoice ID");
+//        
+//        List<Object> headerError = new ArrayList<>(); // header has wrong format
+//        headerError.add("Exist");
+//        headerError.add("Not Exist");
+//        headerError.add("Custodian Department Description");
+//        headerError.add("Yet-to-be Located");
+//        headerError.add("Custodian Department Code");
+//        headerError.add("Business Unit");
+//        headerError.add("Asset Profile ID");
+//        headerError.add("Asset Profile Description");
+//        headerError.add("Asset ID");
+//        headerError.add("Detailed Item Description");
+//        headerError.add("Total Cost");
+//        headerError.add("Net Book Value");
+//        headerError.add("Invoice Date");
+//        headerError.add("PO / BR No.");
+//        headerError.add("Region");
+//        headerError.add("Not UST Property");
+//        headerError.add("Donated Item");
+//        headerError.add("Location");
+//        headerError.add("Voucher ID");
+//        headerError.add("Invoice ID");
+//        
+//        
+//        Map<String, Object> data1 = new HashMap<>(); // correct data
+//        data1.put("Exist", "Y");
+//        data1.put("Not Exist", "");
+//        data1.put("Yet-to-be Located", "");
+//        data1.put("Custodian Department Code", "abc");
+//        data1.put("Custodian Department Description", "abc");
+//        data1.put("Business Unit", "BU1");
+//        data1.put("Asset Profile ID", "asset prof 1");
+//        data1.put("Asset Profile Description", "asset descr 1");
+//        data1.put("Asset ID", "ASSET_001");
+//        data1.put("Detailed Item Description", "lorem ispum");
+//        data1.put("Total Cost", 123.1);
+//        data1.put("Net Book Value", 456.8);
+//        data1.put("Invoice Date", "2024-10-17");
+//        data1.put("PO / BR No.", "PO 1");
+//        data1.put("Region", "Hong Kong");
+//        data1.put("Not UST Property", "N");
+//        data1.put("Donated Item", "N");
+//        data1.put("Location", "LG7");
+//        data1.put("Voucher ID", "Voucher 1");
+//        data1.put("Invoice ID", "invoice 1");
+//
+//        
+//        
+//        Map<String, Object> data2 = new HashMap<>(); // More than one y and asset id is null
+//        data2.put("Exist", "");
+//        data2.put("Not Exist", "Y");
+//        data2.put("Yet-to-be Located", "");
+//        data2.put("Custodian Department Code", "abc");
+//        data2.put("Custodian Department Description", "abc");
+//        data2.put("Business Unit", "BU1");
+//        data2.put("Asset Profile ID", "asset prof 1");
+//        data2.put("Asset Profile Description", "asset descr 1");
+//        data2.put("Asset ID", "ASSET_003");
+//        data2.put("Detailed Item Description", "lorem ispum");
+//        data2.put("Total Cost", 123.1);
+//        data2.put("Net Book Value", 456.8);
+//        data2.put("Invoice Date", "2024-10-17");
+//        data2.put("PO / BR No.", "PO 1");
+//        data2.put("Region", "Hong Kong");
+//        data2.put("Not UST Property", "N");
+//        data2.put("Donated Item", "N");
+//        data2.put("Location", "LG7");
+//        data2.put("Voucher ID", "Voucher 1");
+//        data2.put("Invoice ID", "invoice 1");
+//
+//        Map<String, Object> data3 = new HashMap<>(); // business unit is empty
+//        data3.put("Exist", "");
+//        data3.put("Not Exist", "");
+//        data3.put("Yet-to-be Located", "");
+//        data3.put("Custodian Department Code", "abc");
+//        data3.put("Custodian Department Description", "abc");
+//        data3.put("Business Unit", "BU1");
+//        data3.put("Asset Profile ID", "asset prof 1");
+//        data3.put("Asset Profile Description", "asset descr 1");
+//        data3.put("Asset ID", "ASSET_005");
+//        data3.put("Detailed Item Description", "lorem ispum");
+//        data3.put("Total Cost", 123.1);
+//        data3.put("Net Book Value", 456.8);
+//        data3.put("Invoice Date", "2024-10-17");
+//        data3.put("PO / BR No.", "PO 1");
+//        data3.put("Region", "Hong Kong");
+//        data3.put("Not UST Property", "N");
+//        data3.put("Donated Item", "N");
+//        data3.put("Location", "LG7");
+//        data3.put("Voucher ID", "Voucher 1");
+//        data3.put("Invoice ID", "invoice 1");
+//  
+//		
+//        reponseList.add(header);
+//        reponseList.add(data1);
+//        reponseList.add(data2);
+//        reponseList.add(data3);
 		
-        reponseList.add(header);
-        reponseList.add(data1);
-        reponseList.add(data2);
-        reponseList.add(data3);
-		
-		
+//		log.info(data.get(2).toString());
 		return data;
 		
 	}
 	//list<fasstkdtlstgdao>
 	private void validateUploadData(ArrayList<HashMap<String, Object>> uploadFileData, List<CommonJson> excelErrorList, List<FasStkPlanDtlStgDAO> fasStkPlanDtlStgDAOList, String stkPlanId, String opPageName) throws ErrorDataArrayException {
 		
-		Map<String, Object> headerList = uploadFileData.get(0);
-		if (headerList.get("Exist")=="Exist" && headerList.get("Not Exist")== "Not Exist" &&
-			headerList.get("Yet-to-be Located")== "Yet-to-be Located"&& headerList.get("Business Unit")== "Business Unit"&& headerList.get("Asset ID")== "Asset ID") {
+		HashMap<String, Object> headerList = uploadFileData.get(0);
+		if (headerList.get("Exist").equals("Exist") && 
+			headerList.get("Not Exist").equals("Not Exist") &&
+			headerList.get("Yet-to-be Located").equals("Yet-to-be Located") &&
+			headerList.get("Business Unit").equals("Business Unit") && 
+			headerList.get("Asset ID").equals( "Asset ID")) {
 			String currentUser = "isod01";
-			for (int i = 1; i < uploadFileData.size();i++) {
+			for (int i = 1; i < uploadFileData.size() ;i++) {
 				try {
-					Map<String,Object> datarow = uploadFileData.get(i);
+					HashMap<String,Object> datarow = uploadFileData.get(i);
 				if (uploadFileData.get(i).equals(headerList)) {
 					CommonJson errormsg = new CommonJson();
 					errormsg.set("rowNumber", i);
@@ -624,11 +667,11 @@ public class StocktakeEventHandler implements StocktakeService{
 					excelErrorList.add(errormsg);
 				}
 				
-				Object Exist =  GeneralUtil.initBlankString((String) datarow.get("Exist")).trim();
-				Object Yet_to_be_Located =  GeneralUtil.initBlankString((String)datarow.get("Yet-to-be Located")).trim();
-				Object Not_Exist =  GeneralUtil.initBlankString((String)datarow.get("Not Exist")).trim();
-				Object Business_Unit = datarow.get("Business Unit");
-				Object Asset_ID = datarow.get("Asset ID");
+				String Exist =  GeneralUtil.initBlankString((String) datarow.get("Exist")).trim();
+				String Yet_to_be_Located =  GeneralUtil.initBlankString((String)datarow.get("Yet-to-be Located")).trim();
+				String Not_Exist =  GeneralUtil.initBlankString((String)datarow.get("Not Exist")).trim();
+				String Business_Unit = GeneralUtil.initBlankString((String)(datarow.get("Business Unit"))).trim();
+				String Asset_ID = GeneralUtil.initBlankString((String)(datarow.get("Asset ID"))).trim();
 				String modCtrlTxt = GeneralUtil.genModCtrlTxt();
 				Timestamp currentTimestamp = GeneralUtil.getCurrentTimestamp();
 				
@@ -681,18 +724,19 @@ public class StocktakeEventHandler implements StocktakeService{
 					excelErrorList.add(errormsg);
 				}
 				FasStkPlanDtlDAOPK fasStkPlanDtlDAOPK = new FasStkPlanDtlDAOPK();
-				fasStkPlanDtlDAOPK.setAssetId((String) datarow.get("Asset ID"));
-				fasStkPlanDtlDAOPK.setBusinessUnit((String) datarow.get("Business Unit"));
-				fasStkPlanDtlDAOPK.setStkPlanId(stkPlanId);
-				log.info((String) datarow.get("Asset ID"));
-				log.info((String) datarow.get("Business Unit"));
+				fasStkPlanDtlDAOPK.setAssetId(Asset_ID);
+				fasStkPlanDtlDAOPK.setBusinessUnit(Business_Unit);
+				fasStkPlanDtlDAOPK.setStkPlanId(stkPlanId.trim());
+				log.info(Asset_ID);
+				log.info(Business_Unit);
 				log.info(stkPlanId);
+				
 				FasStkPlanDtlDAO stkPlanDtlDAO = stkPlanDtlRepository.findOne(fasStkPlanDtlDAOPK);
 				
 				if (stkPlanDtlDAO == null) {
 					CommonJson errormsg = new CommonJson();
 					errormsg.set("rowNumber", i);
-					errormsg.set("errorMsg", "Row " + i + "Does not contain a valid Stock item, please check Asset Id, Business Unit.");
+					errormsg.set("errorMsg", "Row " + i + " Does not contain a valid Stock item, please check Asset Id, Business Unit.");
 					excelErrorList.add(errormsg);
 				}else if (Y == 1){
 					String StkStatus ="";
