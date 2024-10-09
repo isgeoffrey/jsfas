@@ -391,10 +391,13 @@ public class StocktakeEventHandler implements StocktakeService{
 	@Override
 	public JSONObject HandleStockPlanExcelUpload(CommonJson inputJson, String opPageName) throws Exception {
 		
-		if (inputJson.get("STK_PLAN_ID")==null) {
+		
+		String stkPlanId = GeneralUtil.initNullString(inputJson.get("STK_PLAN_ID")).trim();
+		String fileName = GeneralUtil.initNullString(inputJson.get("FileName")).trim();
+		if (stkPlanId==null) {
 			throw new InvalidParameterException("STK PLAN ID do not exist");
 		}
-		if (inputJson.get("FileName")==null) {
+		if (fileName==null) {
 			throw new InvalidParameterException("FileName do not exist");
 		}
 		
@@ -402,14 +405,14 @@ public class StocktakeEventHandler implements StocktakeService{
 		List<List<Object>> uploadFileData= null;
 		// 1. get data from execl and put it in the jsonarray
 		try {
-			uploadFileData = getDataFromUploadFile(inputJson.get("FileName"));
+			uploadFileData = getDataFromUploadFile(fileName);
 		}catch (Exception e) {
 			throw new ErrorDataArrayException(e.getMessage()); 
 		}
 
 		// 2. foreach row of data , do data validation
 		List<CommonJson> excelErrorList = new ArrayList<>();
-		validateUploadData(uploadFileData, excelErrorList, fasStkPlanDtlStgDAOList, inputJson, opPageName);
+		validateUploadData(uploadFileData, excelErrorList, fasStkPlanDtlStgDAOList, stkPlanId, opPageName);
 		if (!excelErrorList.isEmpty()) {
 			ErrorDataArrayException ErrorData = new ErrorDataArrayException();
 			ErrorData.setErrorList(excelErrorList);
@@ -486,13 +489,13 @@ public class StocktakeEventHandler implements StocktakeService{
         data1.add("");
         data1.add("abc");
         data1.add("abc");
-        data1.add("abc");
+        data1.add("BU1");
         data1.add("asset prof 1");
         data1.add("asset descr 1");
-        data1.add("asset 1");
+        data1.add("ASSET_001");
         data1.add("lorem ispum");
-        data1.add(123);
-        data1.add(456);
+        data1.add(123.1);
+        data1.add(456.8);
         data1.add("2024-10-17");
         data1.add("PO 1");
         data1.add("Hong Kong");
@@ -504,18 +507,18 @@ public class StocktakeEventHandler implements StocktakeService{
         
         
         List<Object> data2 = new ArrayList<>(); // More than one y and asset id is null
+        data2.add("");
         data2.add("Y");
         data2.add("");
-        data2.add("");
         data2.add("abc");
         data2.add("abc");
-        data2.add("abc");
+        data2.add("BU1");
         data2.add("asset prof 1");
         data2.add("asset descr 1");
-        data2.add("asset 3");
+        data2.add("ASSET_003");
         data2.add("lorem ispum");
-        data2.add(123);
-        data2.add(456);
+        data2.add(123.3);
+        data2.add(456.5);
         data2.add("2024-10-17");
         data2.add("PO 1");
         data2.add("Hong Kong");
@@ -528,16 +531,16 @@ public class StocktakeEventHandler implements StocktakeService{
         List<Object> data3 = new ArrayList<>(); // business unit is empty
         data3.add("");
         data3.add("");
-        data3.add("Y");
+        data3.add("");
         data3.add("abc");
         data3.add("abc");
-        data3.add("abc");
+        data3.add("BU1");
         data3.add("asset prof 1");
         data3.add("asset descr 1");
-        data3.add("asset 5");
+        data3.add("ASSET_005");
         data3.add("lorem ispum");
-        data3.add(123);
-        data3.add(456);
+        data3.add(123.3);
+        data3.add(456.0);
         data3.add("2024-10-17");
         data3.add("PO 1");
         data3.add("Hong Kong");
@@ -558,7 +561,7 @@ public class StocktakeEventHandler implements StocktakeService{
 		
 	}
 	//list<fasstkdtlstgdao>
-	private void validateUploadData(List<List<Object>> uploadFileData, List<CommonJson> excelErrorList, List<FasStkPlanDtlStgDAO> fasStkPlanDtlStgDAOList, CommonJson inputJson, String opPageName) throws ErrorDataArrayException {
+	private void validateUploadData(List<List<Object>> uploadFileData, List<CommonJson> excelErrorList, List<FasStkPlanDtlStgDAO> fasStkPlanDtlStgDAOList, String stkPlanId, String opPageName) throws ErrorDataArrayException {
 		
 		List<Object> headerList = uploadFileData.get(0);
 		if (headerList.get(0)=="Exist" && headerList.get(1)== "Not Exist" &&
@@ -567,9 +570,16 @@ public class StocktakeEventHandler implements StocktakeService{
 			for (int i = 1; i < uploadFileData.size();i++) {
 				try {
 				List<Object> datarow = uploadFileData.get(i);
-				Object Exist =  datarow.get(0);
-				Object Yet_to_be_Located =  datarow.get(2);
-				Object Not_Exist =  datarow.get(1);
+				if (uploadFileData.get(i).containsAll(headerList)) {
+					CommonJson errormsg = new CommonJson();
+					errormsg.set("rowNumber", i);
+					errormsg.set("errorMsg", "this row is headerlist");
+					excelErrorList.add(errormsg);
+				}
+				
+				Object Exist =  GeneralUtil.initNullString((String) datarow.get(0)).trim();
+				Object Yet_to_be_Located =  GeneralUtil.initNullString((String)datarow.get(2)).trim();
+				Object Not_Exist =  GeneralUtil.initNullString((String)datarow.get(1)).trim();
 				Object Business_Unit = datarow.get(5);
 				Object Asset_ID = datarow.get(8);
 				String modCtrlTxt = GeneralUtil.genModCtrlTxt();
@@ -623,48 +633,70 @@ public class StocktakeEventHandler implements StocktakeService{
 					errormsg.set("errorMsg", "Asset ID is blank or not exist ");
 					excelErrorList.add(errormsg);
 				}
-				FasStkPlanDtlStgDAOPK fasStkPlanDtlStgDAOPK = new FasStkPlanDtlStgDAOPK();
-				FasStkPlanDtlStgDAO FfasStkPlanDtlStgDAO = new FasStkPlanDtlStgDAO();
+				FasStkPlanDtlDAOPK fasStkPlanDtlDAOPK = new FasStkPlanDtlDAOPK();
+				fasStkPlanDtlDAOPK.setAssetId((String) datarow.get(8));
+				fasStkPlanDtlDAOPK.setBusinessUnit((String) datarow.get(5));
+				fasStkPlanDtlDAOPK.setStkPlanId(stkPlanId);
 				
-				fasStkPlanDtlStgDAOPK.setAssetId((String) datarow.get(8));
-				fasStkPlanDtlStgDAOPK.setBusinessUnit((String) datarow.get(5));
-				fasStkPlanDtlStgDAOPK.setStkPlanId(inputJson.get("STK_PLAN_ID"));
+				FasStkPlanDtlDAO stkPlanDtlDAO = stkPlanDtlRepository.findOne(fasStkPlanDtlDAOPK);
 				
-				FfasStkPlanDtlStgDAO.setFasStkPlanDtlStgDAOPK(fasStkPlanDtlStgDAOPK);
-				if (Exist.equals("Y")) {
-					FfasStkPlanDtlStgDAO.setStkStatus("E");
-				}else 
-				if (Yet_to_be_Located.equals("Y")) {
-					FfasStkPlanDtlStgDAO.setStkStatus("Y");
-				}else 
-				if (Not_Exist.equals("Y")) {
-					FfasStkPlanDtlStgDAO.setStkStatus("N");
-				}else {
-					FfasStkPlanDtlStgDAO.setStkStatus("");
+				if (stkPlanDtlDAO == null) {
+					CommonJson errormsg = new CommonJson();
+					errormsg.set("rowNumber", i);
+					errormsg.set("errorMsg", "Row " + i + "Does not contain a valid Stock item, please check Asset Id, Business Unit.");
+					excelErrorList.add(errormsg);
+				}else if (Y == 1){
+					String StkStatus ="";
+					if (Exist.equals("Y")) {
+						StkStatus = "E";
+					}else 
+					if (Yet_to_be_Located.equals("Y")) {
+						StkStatus = "Y";
+					}else 
+					if (Not_Exist.equals("Y")) {
+						StkStatus = "N";
+					}else {
+						StkStatus = "";
+					}
+					FasStkPlanDtlStgDAO FfasStkPlanDtlStgDAO = new FasStkPlanDtlStgDAO(stkPlanDtlDAO, StkStatus);
+					fasStkPlanDtlStgDAOList.add(FfasStkPlanDtlStgDAO);
 				}
-				FfasStkPlanDtlStgDAO.setPoId(GeneralUtil.initNullString((String) datarow.get(13)));
-				FfasStkPlanDtlStgDAO.setAssetDescrLong(GeneralUtil.initNullString((String) datarow.get(9)));
-				FfasStkPlanDtlStgDAO.setDonationFlag(GeneralUtil.initNullString((String) datarow.get(16)));
-				FfasStkPlanDtlStgDAO.setInvoiceDt( GeneralUtil.initNullTimestamp((Timestamp) GeneralUtil.convertStringToTimestamp((String) datarow.get(12))));
-				FfasStkPlanDtlStgDAO.setInvoiceId(GeneralUtil.initNullString((String) datarow.get(19)));
-				FfasStkPlanDtlStgDAO.setLocation(GeneralUtil.initNullString((String) datarow.get(17)));
-				FfasStkPlanDtlStgDAO.setTotalCost(GeneralUtil.initNullDouble(Double.valueOf((Integer) datarow.get(10))));
-				FfasStkPlanDtlStgDAO.setNbv(GeneralUtil.initNullDouble(Double.valueOf((Integer) datarow.get(11))));
-				FfasStkPlanDtlStgDAO.setNotUstProprty(GeneralUtil.initNullString((String) datarow.get(15)));
-				FfasStkPlanDtlStgDAO.setProfileDescr(GeneralUtil.initNullString((String) datarow.get(7)));
-				FfasStkPlanDtlStgDAO.setProfileId(GeneralUtil.initNullString((String) datarow.get(6)));
-				FfasStkPlanDtlStgDAO.setRegionName(GeneralUtil.initNullString((String) datarow.get(14)));
-				FfasStkPlanDtlStgDAO.setVoucherId(GeneralUtil.initNullString((String) datarow.get(18)));
+				// fasdao variable = repo find one
+				// if null = action
+				// else create stgdao and to list
 				
+//				
+//				
+//				FasStkPlanDtlStgDAOPK fasStkPlanDtlStgDAOPK = new FasStkPlanDtlStgDAOPK();
+//				FasStkPlanDtlStgDAO FfasStkPlanDtlStgDAO = new FasStkPlanDtlStgDAO();
+//				
+//				fasStkPlanDtlStgDAOPK.setAssetId((String) datarow.get(8));
+//				fasStkPlanDtlStgDAOPK.setBusinessUnit((String) datarow.get(5));
+//				fasStkPlanDtlStgDAOPK.setStkPlanId(stkPlanId);
+//				
+//				FfasStkPlanDtlStgDAO.setFasStkPlanDtlStgDAOPK(fasStkPlanDtlStgDAOPK);
+//				FfasStkPlanDtlStgDAO.setPoId(GeneralUtil.initNullString((String) datarow.get(13)));
+//				FfasStkPlanDtlStgDAO.setAssetDescrLong(GeneralUtil.initNullString((String) datarow.get(9)));
+//				FfasStkPlanDtlStgDAO.setDonationFlag(GeneralUtil.initNullString((String) datarow.get(16)));
+//				FfasStkPlanDtlStgDAO.setInvoiceDt( GeneralUtil.initNullTimestamp((Timestamp) GeneralUtil.convertStringToTimestamp((String) datarow.get(12))));
+//				FfasStkPlanDtlStgDAO.setInvoiceId(GeneralUtil.initNullString((String) datarow.get(19)));
+//				FfasStkPlanDtlStgDAO.setLocation(GeneralUtil.initNullString((String) datarow.get(17)));
+//				FfasStkPlanDtlStgDAO.setTotalCost(GeneralUtil.initNullDouble((Double) datarow.get(10)));
+//				FfasStkPlanDtlStgDAO.setNbv(GeneralUtil.initNullDouble((Double) datarow.get(11)));
+//				FfasStkPlanDtlStgDAO.setNotUstProprty(GeneralUtil.initNullString((String) datarow.get(15)));
+//				FfasStkPlanDtlStgDAO.setProfileDescr(GeneralUtil.initNullString((String) datarow.get(7)));
+//				FfasStkPlanDtlStgDAO.setProfileId(GeneralUtil.initNullString((String) datarow.get(6)));
+//				FfasStkPlanDtlStgDAO.setRegionName(GeneralUtil.initNullString((String) datarow.get(14)));
+//				FfasStkPlanDtlStgDAO.setVoucherId(GeneralUtil.initNullString((String) datarow.get(18)));
+	
+//				FfasStkPlanDtlStgDAO.setModCtrlTxt(modCtrlTxt);
+//				FfasStkPlanDtlStgDAO.setCreateDate(currentTimestamp);
+//				FfasStkPlanDtlStgDAO.setCreateUser(currentUser);
+//				FfasStkPlanDtlStgDAO.setChangeDate(currentTimestamp);
+//				FfasStkPlanDtlStgDAO.setChangeUser(currentUser);
+//				FfasStkPlanDtlStgDAO.setOpPageName(opPageName);
 				
-				FfasStkPlanDtlStgDAO.setModCtrlTxt(modCtrlTxt);
-				FfasStkPlanDtlStgDAO.setCreateDate(currentTimestamp);
-				FfasStkPlanDtlStgDAO.setCreateUser(currentUser);
-				FfasStkPlanDtlStgDAO.setChangeDate(currentTimestamp);
-				FfasStkPlanDtlStgDAO.setChangeUser(currentUser);
-				FfasStkPlanDtlStgDAO.setOpPageName(opPageName);
-				
-				fasStkPlanDtlStgDAOList.add(FfasStkPlanDtlStgDAO);
+//				fasStkPlanDtlStgDAOList.add(FfasStkPlanDtlStgDAO);
 				
 				
 				
@@ -686,13 +718,12 @@ public class StocktakeEventHandler implements StocktakeService{
 	}
 	
 	
-	private void insertUploadedData (List<FasStkPlanDtlStgDAO> fasStkPlanDtlStgDAOList) throws JSONException, ErrorDataArrayException {
+	private void insertUploadedData (List<FasStkPlanDtlStgDAO> fasStkPlanDtlStgDAOList) throws ErrorDataArrayException {
 		for(FasStkPlanDtlStgDAO fasStkPlanDtlStgDAO:fasStkPlanDtlStgDAOList) {
-			log.info(fasStkPlanDtlStgDAO.getFasStkPlanDtlStgDAOPK().getAssetId());
+			log.info((fasStkPlanDtlStgDAO.getFasStkPlanDtlStgDAOPK().getAssetId()));
 		}
 		try {
-			
-//			stkPlanDtlStgRepository.saveAll(fasStkPlanDtlStgDAOList);
+			stkPlanDtlStgRepository.saveAll(fasStkPlanDtlStgDAOList);
 			
 		}catch (Exception e) {
 			throw new ErrorDataArrayException("Unable to update Staging data");
