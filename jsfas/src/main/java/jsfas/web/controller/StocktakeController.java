@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import jsfas.common.constants.RestURIConstants;
 import jsfas.common.exception.ErrorDataArrayException;
@@ -129,11 +130,11 @@ public class StocktakeController extends CommonApiController {
 		return setSuccess(response);
 	}
 	
-	@RequestMapping(value="/upload_stk_plan_excel", method=RequestMethod.POST)
-	public Response uploadStockTakePlanExcel(HttpServletRequest request, @RequestBody CommonJson inputJson) throws Exception {
+	@RequestMapping(value= RestURIConstants.UPLOAD_STK_PLAN_EXCEL, method=RequestMethod.POST)
+	public Response uploadStockTakePlanExcel(@RequestParam("file") MultipartFile uploadFile, @RequestParam("stkPlanId") String stkPlanId, @RequestParam("opPageName") String opPageName) throws Exception {
 		Response response = new Response();
-		String opPageName = getOpPageName(request);
-		CommonJson data = new CommonJson().set("stkPlan", GeneralUtil.jsonObjectToCommonJson(stocktakeService.HandleStockPlanExcelUpload(inputJson, opPageName)));
+
+		CommonJson data = new CommonJson().set("stkPlan", GeneralUtil.jsonObjectToCommonJson(stocktakeService.HandleStockPlanExcelUpload(uploadFile, stkPlanId, opPageName)));
 		
 				
 		response.setData(data);

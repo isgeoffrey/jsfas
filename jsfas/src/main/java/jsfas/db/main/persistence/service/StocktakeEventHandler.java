@@ -1,6 +1,7 @@
 package jsfas.db.main.persistence.service;
 
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.mchange.rmi.NotAuthorizedException;
 
@@ -8,10 +9,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Timestamp;
 
 import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,6 +37,10 @@ import jsfas.db.main.persistence.domain.FasStkPlanHdrDAO;
 import jsfas.db.main.persistence.repository.FasStkPlanDtlRepository;
 import jsfas.db.main.persistence.repository.FasStkPlanDtlStgRepository;
 import jsfas.db.main.persistence.repository.FasStkPlanHdrRepostiory;
+import jsfas.common.excel.XLSReader.FileFormatInvalidException;
+import jsfas.common.excel.XCol;
+import jsfas.common.excel.XLSReader;
+import jsfas.common.constants.AppConstants;
 import jsfas.common.constants.StkPlanStatus;
 import jsfas.common.exception.ErrorDataArrayException;
 import jsfas.common.exception.InvalidParameterException;
@@ -39,7 +53,7 @@ import org.slf4j.LoggerFactory;
 
 
 public class StocktakeEventHandler implements StocktakeService{
-
+	
 	@Autowired
 	FasStkPlanHdrRepostiory stkPlanHdrRepository;
 
@@ -390,26 +404,27 @@ public class StocktakeEventHandler implements StocktakeService{
 	
 
 	@Override
-	public JSONObject HandleStockPlanExcelUpload(CommonJson inputJson, String opPageName) throws Exception {
+	public JSONObject HandleStockPlanExcelUpload(MultipartFile uploadFile, String stkPlanId, String opPageName) throws Exception {
 		
-		
-		String stkPlanId = GeneralUtil.initBlankString(inputJson.get("STK_PLAN_ID")).trim();
-		String fileName = GeneralUtil.initBlankString(inputJson.get("FileName")).trim();
-		if (stkPlanId==null) {
+		if (GeneralUtil.initBlankString(stkPlanId).trim()==null) {
 			throw new InvalidParameterException("STK PLAN ID do not exist");
 		}
-		if (fileName==null) {
-			throw new InvalidParameterException("FileName do not exist");
+		if (uploadFile.isEmpty()) {
+			throw new InvalidParameterException("uploadFile is not exist");
+		}
+		
+		if (uploadFile.getSize()==0) {
+			throw new InvalidParameterException("uploadFile is empty");
 		}
 		
 		List<FasStkPlanDtlStgDAO> fasStkPlanDtlStgDAOList = new ArrayList<>();
-		List<List<Object>> uploadFileData= null;
+		ArrayList<HashMap<String, Object>> uploadFileData= null;
 		// 1. get data from execl and put it in the jsonarray
-		try {
-			uploadFileData = getDataFromUploadFile(fileName);
-		}catch (Exception e) {
-			throw new ErrorDataArrayException(e.getMessage()); 
-		}
+//		try {
+			uploadFileData = getDataFromUploadFile(uploadFile);
+//		}catch (Exception e) {
+//			throw new ErrorDataArrayException(e.getMessage()); 
+//		}
 
 		// 2. foreach row of data , do data validation
 		List<CommonJson> excelErrorList = new ArrayList<>();
@@ -435,37 +450,61 @@ public class StocktakeEventHandler implements StocktakeService{
 	}
 	
 	
-	private List<List<Object>> getDataFromUploadFile(String FileName) throws JSONException, IOException{
+	private ArrayList<HashMap<String, Object>> getDataFromUploadFile(MultipartFile uploadFile) throws IOException, InvalidParameterException{
 			
-		List<List<Object>> reponseList = new ArrayList<List<Object>>();
+		List<Map<String,Object>> reponseList = new ArrayList<Map<String,Object>>();
+		String uploadFileName = uploadFile.getOriginalFilename();
 		
-//		if(!FileName.toLowerCase().endsWith(".xlsx") && !FileName.toLowerCase().endsWith(".xls")) {
-//			throw new FileFormatInvalidException(FileName);
-//		}
-//		
-//		File uploadFile = new File ("C:\\tmp\\fas\\upload_excel\\temp" + File.separator + FileName);
+		String currentUser = "isod01";
+		log.info(uploadFileName);
+		File FiletoGetData = new File ("C:\\tmp\\fas\\upload_excel\\temp"+ File.separator + GeneralUtil.getCurrentTimestamp()+ currentUser+ uploadFileName);
 		
-		List<Object> header = new ArrayList<>();
-        header.add("Exist");
-        header.add("Not Exist");
-        header.add("Yet-to-be Located");
-        header.add("Custodian Department Code");
-        header.add("Custodian Department Description");
-        header.add("Business Unit");
-        header.add("Asset Profile ID");
-        header.add("Asset Profile Description");
-        header.add("Asset ID");
-        header.add("Detailed Item Description");
-        header.add("Total Cost");
-        header.add("Net Book Value");
-        header.add("Invoice Date");
-        header.add("PO / BR No.");
-        header.add("Region");
-        header.add("Not UST Property");
-        header.add("Donated Item");
-        header.add("Location");
-        header.add("Voucher ID");
-        header.add("Invoice ID");
+
+		if(!uploadFileName.toLowerCase().endsWith(".xlsx") && !uploadFileName.toLowerCase().endsWith(".xls")) {
+			throw new FileFormatInvalidException(uploadFileName);
+		}
+		
+		
+		if (!FiletoGetData.exists()) {
+			throw new FileNotFoundException(uploadFileName);
+		}
+		ArrayList<XCol> uploadFileColList = new ArrayList<>();
+		ArrayList<HashMap<String, Object>> data = new ArrayList<HashMap<String, Object>>();
+		
+		if(FiletoGetData.getName().toLowerCase().endsWith(".xls")) {
+			try (HSSFWorkbook wb = XLSReader.getWorkbook(FileUtils.readFileToByteArray(FiletoGetData))) {				
+				HSSFSheet ws = wb.getSheetAt(0);
+				data = XLSReader.read(uploadFileColList, 0, ws);
+			}
+		}else if (FiletoGetData.getName().toLowerCase().endsWith(".xlsx")) {
+			try (XSSFWorkbook wb = XLSReader.getXSSFWorkbook(FileUtils.readFileToByteArray(FiletoGetData))) {
+				XSSFSheet ws = wb.getSheetAt(0);
+				data = XLSReader.readXSSF(uploadFileColList, 0, ws);
+			}
+		}
+		
+		
+		Map<String, Object> header = new HashMap<>();
+        header.put("Exist", "Exist");
+        header.put("Not Exist", "Not Exist");
+        header.put("Yet-to-be Located", "Yet-to-be Located");
+        header.put("Custodian Department Code", "Custodian Department Code");
+        header.put("Custodian Department Description", "Custodian Department Description");
+        header.put("Business Unit", "Business Unit");
+        header.put("Asset Profile ID", "Asset Profile ID");
+        header.put("Asset Profile Description", "Asset Profile Description");
+        header.put("Asset ID", "Asset ID");
+        header.put("Detailed Item Description", "Detailed Item Description");
+        header.put("Total Cost", "Total Cost");
+        header.put("Net Book Value", "Net Book Value");
+        header.put("Invoice Date", "Invoice Date");
+        header.put("PO / BR No.", "PO / BR No.");
+        header.put("Region", "Region");
+        header.put("Not UST Property", "Not UST Property");
+        header.put("Donated Item", "Donated Item");
+        header.put("Location", "Location");
+        header.put("Voucher ID", "Voucher ID");
+        header.put("Invoice ID", "Invoice ID");
         
         List<Object> headerError = new ArrayList<>(); // header has wrong format
         headerError.add("Exist");
@@ -490,73 +529,74 @@ public class StocktakeEventHandler implements StocktakeService{
         headerError.add("Invoice ID");
         
         
-        List<Object> data1 = new ArrayList<>(); // correct data
-        data1.add("Y");
-        data1.add("");
-        data1.add("");
-        data1.add("abc");
-        data1.add("abc");
-        data1.add("BU1");
-        data1.add("asset prof 1");
-        data1.add("asset descr 1");
-        data1.add("ASSET_001");
-        data1.add("lorem ispum");
-        data1.add(123.1);
-        data1.add(456.8);
-        data1.add("2024-10-17");
-        data1.add("PO 1");
-        data1.add("Hong Kong");
-        data1.add("N");
-        data1.add("N");
-        data1.add("LG7");
-        data1.add("Voucher 1");
-        data1.add("invoice 1");
+        Map<String, Object> data1 = new HashMap<>(); // correct data
+        data1.put("Exist", "Y");
+        data1.put("Not Exist", "");
+        data1.put("Yet-to-be Located", "");
+        data1.put("Custodian Department Code", "abc");
+        data1.put("Custodian Department Description", "abc");
+        data1.put("Business Unit", "BU1");
+        data1.put("Asset Profile ID", "asset prof 1");
+        data1.put("Asset Profile Description", "asset descr 1");
+        data1.put("Asset ID", "ASSET_001");
+        data1.put("Detailed Item Description", "lorem ispum");
+        data1.put("Total Cost", 123.1);
+        data1.put("Net Book Value", 456.8);
+        data1.put("Invoice Date", "2024-10-17");
+        data1.put("PO / BR No.", "PO 1");
+        data1.put("Region", "Hong Kong");
+        data1.put("Not UST Property", "N");
+        data1.put("Donated Item", "N");
+        data1.put("Location", "LG7");
+        data1.put("Voucher ID", "Voucher 1");
+        data1.put("Invoice ID", "invoice 1");
+
         
         
-        List<Object> data2 = new ArrayList<>(); // More than one y and asset id is null
-        data2.add("");
-        data2.add("Y");
-        data2.add("");
-        data2.add("abc");
-        data2.add("abc");
-        data2.add("BU1");
-        data2.add("asset prof 1");
-        data2.add("asset descr 1");
-        data2.add("ASSET_003");
-        data2.add("lorem ispum");
-        data2.add(123.3);
-        data2.add(456.5);
-        data2.add("2024-10-17");
-        data2.add("PO 1");
-        data2.add("Hong Kong");
-        data2.add("N");
-        data2.add("N");
-        data2.add("LG7");
-        data2.add("Voucher 1");
-        data2.add("invoice 1");
-        
-        List<Object> data3 = new ArrayList<>(); // business unit is empty
-        data3.add("");
-        data3.add("");
-        data3.add("");
-        data3.add("abc");
-        data3.add("abc");
-        data3.add("BU1");
-        data3.add("asset prof 1");
-        data3.add("asset descr 1");
-        data3.add("ASSET_005");
-        data3.add("lorem ispum");
-        data3.add(123.3);
-        data3.add(456.0);
-        data3.add("2024-10-17");
-        data3.add("PO 1");
-        data3.add("Hong Kong");
-        data3.add("N");
-        data3.add("N");
-        data3.add("LG7");
-        data3.add("Voucher 1");
-        data3.add("invoice 1");
-        
+        Map<String, Object> data2 = new HashMap<>(); // More than one y and asset id is null
+        data2.put("Exist", "");
+        data2.put("Not Exist", "Y");
+        data2.put("Yet-to-be Located", "");
+        data2.put("Custodian Department Code", "abc");
+        data2.put("Custodian Department Description", "abc");
+        data2.put("Business Unit", "BU1");
+        data2.put("Asset Profile ID", "asset prof 1");
+        data2.put("Asset Profile Description", "asset descr 1");
+        data2.put("Asset ID", "ASSET_003");
+        data2.put("Detailed Item Description", "lorem ispum");
+        data2.put("Total Cost", 123.1);
+        data2.put("Net Book Value", 456.8);
+        data2.put("Invoice Date", "2024-10-17");
+        data2.put("PO / BR No.", "PO 1");
+        data2.put("Region", "Hong Kong");
+        data2.put("Not UST Property", "N");
+        data2.put("Donated Item", "N");
+        data2.put("Location", "LG7");
+        data2.put("Voucher ID", "Voucher 1");
+        data2.put("Invoice ID", "invoice 1");
+
+        Map<String, Object> data3 = new HashMap<>(); // business unit is empty
+        data3.put("Exist", "");
+        data3.put("Not Exist", "");
+        data3.put("Yet-to-be Located", "");
+        data3.put("Custodian Department Code", "abc");
+        data3.put("Custodian Department Description", "abc");
+        data3.put("Business Unit", "BU1");
+        data3.put("Asset Profile ID", "asset prof 1");
+        data3.put("Asset Profile Description", "asset descr 1");
+        data3.put("Asset ID", "ASSET_005");
+        data3.put("Detailed Item Description", "lorem ispum");
+        data3.put("Total Cost", 123.1);
+        data3.put("Net Book Value", 456.8);
+        data3.put("Invoice Date", "2024-10-17");
+        data3.put("PO / BR No.", "PO 1");
+        data3.put("Region", "Hong Kong");
+        data3.put("Not UST Property", "N");
+        data3.put("Donated Item", "N");
+        data3.put("Location", "LG7");
+        data3.put("Voucher ID", "Voucher 1");
+        data3.put("Invoice ID", "invoice 1");
+  
 		
         reponseList.add(header);
         reponseList.add(data1);
@@ -564,31 +604,31 @@ public class StocktakeEventHandler implements StocktakeService{
         reponseList.add(data3);
 		
 		
-		return reponseList;
+		return data;
 		
 	}
 	//list<fasstkdtlstgdao>
-	private void validateUploadData(List<List<Object>> uploadFileData, List<CommonJson> excelErrorList, List<FasStkPlanDtlStgDAO> fasStkPlanDtlStgDAOList, String stkPlanId, String opPageName) throws ErrorDataArrayException {
+	private void validateUploadData(ArrayList<HashMap<String, Object>> uploadFileData, List<CommonJson> excelErrorList, List<FasStkPlanDtlStgDAO> fasStkPlanDtlStgDAOList, String stkPlanId, String opPageName) throws ErrorDataArrayException {
 		
-		List<Object> headerList = uploadFileData.get(0);
-		if (headerList.get(0)=="Exist" && headerList.get(1)== "Not Exist" &&
-			headerList.get(2)== "Yet-to-be Located"&& headerList.get(5)== "Business Unit"&& headerList.get(8)== "Asset ID") {
+		Map<String, Object> headerList = uploadFileData.get(0);
+		if (headerList.get("Exist")=="Exist" && headerList.get("Not Exist")== "Not Exist" &&
+			headerList.get("Yet-to-be Located")== "Yet-to-be Located"&& headerList.get("Business Unit")== "Business Unit"&& headerList.get("Asset ID")== "Asset ID") {
 			String currentUser = "isod01";
 			for (int i = 1; i < uploadFileData.size();i++) {
 				try {
-				List<Object> datarow = uploadFileData.get(i);
-				if (uploadFileData.get(i).containsAll(headerList)) {
+					Map<String,Object> datarow = uploadFileData.get(i);
+				if (uploadFileData.get(i).equals(headerList)) {
 					CommonJson errormsg = new CommonJson();
 					errormsg.set("rowNumber", i);
 					errormsg.set("errorMsg", "this row is headerlist");
 					excelErrorList.add(errormsg);
 				}
 				
-				Object Exist =  GeneralUtil.initBlankString((String) datarow.get(0)).trim();
-				Object Yet_to_be_Located =  GeneralUtil.initBlankString((String)datarow.get(2)).trim();
-				Object Not_Exist =  GeneralUtil.initBlankString((String)datarow.get(1)).trim();
-				Object Business_Unit = datarow.get(5);
-				Object Asset_ID = datarow.get(8);
+				Object Exist =  GeneralUtil.initBlankString((String) datarow.get("Exist")).trim();
+				Object Yet_to_be_Located =  GeneralUtil.initBlankString((String)datarow.get("Yet-to-be Located")).trim();
+				Object Not_Exist =  GeneralUtil.initBlankString((String)datarow.get("Not Exist")).trim();
+				Object Business_Unit = datarow.get("Business Unit");
+				Object Asset_ID = datarow.get("Asset ID");
 				String modCtrlTxt = GeneralUtil.genModCtrlTxt();
 				Timestamp currentTimestamp = GeneralUtil.getCurrentTimestamp();
 				
@@ -641,10 +681,12 @@ public class StocktakeEventHandler implements StocktakeService{
 					excelErrorList.add(errormsg);
 				}
 				FasStkPlanDtlDAOPK fasStkPlanDtlDAOPK = new FasStkPlanDtlDAOPK();
-				fasStkPlanDtlDAOPK.setAssetId((String) datarow.get(8));
-				fasStkPlanDtlDAOPK.setBusinessUnit((String) datarow.get(5));
+				fasStkPlanDtlDAOPK.setAssetId((String) datarow.get("Asset ID"));
+				fasStkPlanDtlDAOPK.setBusinessUnit((String) datarow.get("Business Unit"));
 				fasStkPlanDtlDAOPK.setStkPlanId(stkPlanId);
-				
+				log.info((String) datarow.get("Asset ID"));
+				log.info((String) datarow.get("Business Unit"));
+				log.info(stkPlanId);
 				FasStkPlanDtlDAO stkPlanDtlDAO = stkPlanDtlRepository.findOne(fasStkPlanDtlDAOPK);
 				
 				if (stkPlanDtlDAO == null) {

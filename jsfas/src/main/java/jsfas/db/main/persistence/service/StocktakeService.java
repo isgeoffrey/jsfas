@@ -2,6 +2,7 @@ package jsfas.db.main.persistence.service;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.web.multipart.MultipartFile;
 
 import jsfas.common.json.CommonJson;
 
@@ -23,7 +24,7 @@ public interface StocktakeService {
 
 	JSONObject clearStocktakeByRow (JSONObject inputJson) throws Exception;
 
-	JSONObject HandleStockPlanExcelUpload(CommonJson inputJson, String opPageName)throws Exception;
+	JSONObject HandleStockPlanExcelUpload(MultipartFile uploadFile, String stkPlanId, String opPageName)throws Exception;
 
 	
 }
