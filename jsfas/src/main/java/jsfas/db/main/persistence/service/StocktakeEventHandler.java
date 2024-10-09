@@ -7,7 +7,8 @@ import com.mchange.rmi.NotAuthorizedException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
+import java.io.File;
+import java.io.IOException;
 import java.sql.Timestamp;
 
 import java.util.Map;
@@ -392,8 +393,8 @@ public class StocktakeEventHandler implements StocktakeService{
 	public JSONObject HandleStockPlanExcelUpload(CommonJson inputJson, String opPageName) throws Exception {
 		
 		
-		String stkPlanId = GeneralUtil.initNullString(inputJson.get("STK_PLAN_ID")).trim();
-		String fileName = GeneralUtil.initNullString(inputJson.get("FileName")).trim();
+		String stkPlanId = GeneralUtil.initBlankString(inputJson.get("STK_PLAN_ID")).trim();
+		String fileName = GeneralUtil.initBlankString(inputJson.get("FileName")).trim();
 		if (stkPlanId==null) {
 			throw new InvalidParameterException("STK PLAN ID do not exist");
 		}
@@ -434,9 +435,15 @@ public class StocktakeEventHandler implements StocktakeService{
 	}
 	
 	
-	private List<List<Object>> getDataFromUploadFile(String FileName) throws JSONException{
+	private List<List<Object>> getDataFromUploadFile(String FileName) throws JSONException, IOException{
 			
 		List<List<Object>> reponseList = new ArrayList<List<Object>>();
+		
+//		if(!FileName.toLowerCase().endsWith(".xlsx") && !FileName.toLowerCase().endsWith(".xls")) {
+//			throw new FileFormatInvalidException(FileName);
+//		}
+//		
+//		File uploadFile = new File ("C:\\tmp\\fas\\upload_excel\\temp" + File.separator + FileName);
 		
 		List<Object> header = new ArrayList<>();
         header.add("Exist");
@@ -577,9 +584,9 @@ public class StocktakeEventHandler implements StocktakeService{
 					excelErrorList.add(errormsg);
 				}
 				
-				Object Exist =  GeneralUtil.initNullString((String) datarow.get(0)).trim();
-				Object Yet_to_be_Located =  GeneralUtil.initNullString((String)datarow.get(2)).trim();
-				Object Not_Exist =  GeneralUtil.initNullString((String)datarow.get(1)).trim();
+				Object Exist =  GeneralUtil.initBlankString((String) datarow.get(0)).trim();
+				Object Yet_to_be_Located =  GeneralUtil.initBlankString((String)datarow.get(2)).trim();
+				Object Not_Exist =  GeneralUtil.initBlankString((String)datarow.get(1)).trim();
 				Object Business_Unit = datarow.get(5);
 				Object Asset_ID = datarow.get(8);
 				String modCtrlTxt = GeneralUtil.genModCtrlTxt();
@@ -717,7 +724,7 @@ public class StocktakeEventHandler implements StocktakeService{
 		}
 	}
 	
-	
+	@Transactional(value = "transactionManagerJsfasMain", rollbackFor = Exception.class)
 	private void insertUploadedData (List<FasStkPlanDtlStgDAO> fasStkPlanDtlStgDAOList) throws ErrorDataArrayException {
 		for(FasStkPlanDtlStgDAO fasStkPlanDtlStgDAO:fasStkPlanDtlStgDAOList) {
 			log.info((fasStkPlanDtlStgDAO.getFasStkPlanDtlStgDAOPK().getAssetId()));
