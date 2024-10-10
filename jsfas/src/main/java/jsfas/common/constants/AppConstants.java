@@ -2,6 +2,9 @@ package jsfas.common.constants;
 
 import org.quartz.Trigger.TriggerState;
 
+import jsfas.common.excel.XCDbl;
+import jsfas.common.excel.XCStr;
+
 /**
  * @author iseric123
  * @since 12/5/2016
@@ -133,4 +136,27 @@ public class AppConstants {
     
     // JSSV
     public static final String JSSV_LINK = "jssv.link";
+    
+    //upload excel header
+    public static final String XLS_HDR_EXIST = "Exist";
+    public static final String XLS_HDR_NOT_EXIST = "Not Exist";
+    public static final String XLS_HDR_YET_TO_BE_LOCATED = "Yet-to-be Located";
+    public static final String XLS_HDR_CUSTODAIN_DEPARTMENT_CODE = "Custodian Department Code";
+    public static final String XLS_HDR_CUSTODAIN_DEPARTMENT_DESCR = "Custodian Department Description";
+    public static final String XLS_HDR_BUSINESS_UNIT = "Business Unit";
+    public static final String XLS_HDR_ASSEST_PROFILE_ID = "Asset Profile ID";
+    public static final String XLS_HDR_ASSEST_PROFILE_DESCR = "Asset Profile Description";
+    public static final String XLS_HDR_ASSET_ID = "Asset ID";
+    public static final String XLS_HDR_DETAILED_ITEM_DESCR = "Detailed Item Description";
+    public static final String XLS_HDR_TOTAL_COST = "Total Cost";
+    public static final String XLS_HDR_NET_BOOK_VALUE = "Net Book Value";
+    public static final String XLS_HDR_INVOICE_DATE = "Invoice Date";
+    public static final String XLS_HDR_PO_ID = "PO / BR No.";
+    public static final String XLS_HDR_REGION = "Region";
+    public static final String XLS_HDR_NOT_UST_PROPERTY = "Not UST Property";
+    public static final String XLS_HDR_DONATED_ITEM = "Donated Item";
+    public static final String XLS_HDR_LOCATION = "Location";
+    public static final String XLS_HDR_VOUCHER_ID = "Voucher ID";
+    public static final String XLS_HDR_INVOICE_ID = "Invoice ID";
+    
 }

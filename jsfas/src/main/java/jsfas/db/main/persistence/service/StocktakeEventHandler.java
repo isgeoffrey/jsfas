@@ -16,7 +16,6 @@ import java.sql.Timestamp;
 
 import java.util.Map;
 
-import javax.inject.Inject;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -25,11 +24,9 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import freemarker.core.Environment;
 import jsfas.common.utils.GeneralUtil;
 import jsfas.db.main.persistence.domain.FasStkPlanDtlDAO;
 import jsfas.db.main.persistence.domain.FasStkPlanDtlDAOPK;
@@ -43,7 +40,6 @@ import jsfas.common.excel.XLSReader.FileFormatInvalidException;
 import jsfas.common.excel.XCol;
 import jsfas.common.excel.XCDbl;
 import jsfas.common.excel.XCStr;
-import jsfas.common.excel.XCTime;
 import jsfas.common.excel.XLSReader;
 import jsfas.common.constants.AppConstants;
 import jsfas.common.constants.StkPlanStatus;
@@ -425,11 +421,11 @@ public class StocktakeEventHandler implements StocktakeService{
 		List<FasStkPlanDtlStgDAO> fasStkPlanDtlStgDAOList = new ArrayList<>();
 		ArrayList<HashMap<String, Object>> uploadFileData= null;
 		// 1. get data from execl and put it in the jsonarray
-//		try {
+		try {
 			uploadFileData = getDataFromUploadFile(uploadFile);
-//		}catch (Exception e) {
-//			throw new ErrorDataArrayException(e.getMessage()); 
-//		}
+		}catch (Exception e) {
+			throw new ErrorDataArrayException(e.getMessage()); 
+		}
 
 		// 2. foreach row of data , do data validation
 		List<CommonJson> excelErrorList = new ArrayList<>();
@@ -443,17 +439,13 @@ public class StocktakeEventHandler implements StocktakeService{
 		
 		// 3. return process result 
 	
-
-		JSONObject outputJSON = new JSONObject();
 		insertUploadedData (fasStkPlanDtlStgDAOList);
-		outputJSON.put("data", uploadFileData);
-		
-
+		JSONObject outputJSON = new JSONObject();
+		outputJSON.put("data", fasStkPlanDtlStgDAOList);
 		
 		return outputJSON;
 		
 	}
-	
 	
 	private ArrayList<HashMap<String, Object>> getDataFromUploadFile(MultipartFile uploadFile) throws IOException, InvalidParameterException{
 			
@@ -465,7 +457,8 @@ public class StocktakeEventHandler implements StocktakeService{
 		String time_str = GeneralUtil.genModCtrlTxt();
 		
 		String currentUser = "isod01";
-		
+	
+		// copy upload file to temp dir
 		File outputFileDir = new File ("C:\\tmp\\fas\\upload_excel\\temp" + File.separator + currentUser);
 		if (!outputFileDir.exists()) {
 			outputFileDir.mkdirs();
@@ -474,8 +467,6 @@ public class StocktakeEventHandler implements StocktakeService{
 			
 		FileUtils.writeByteArrayToFile(outputFile, uploadFile.getBytes());
 		String outputFileName = outputFile.getName();
-		
-		log.info(outputFileName);
 
 		if(!outputFileName.toLowerCase().endsWith(".xlsx") && !outputFileName.toLowerCase().endsWith(".xls")) {
 			throw new FileFormatInvalidException(outputFileName);
@@ -499,7 +490,7 @@ public class StocktakeEventHandler implements StocktakeService{
 		uploadFileColList.add(new XCStr(9,"Detailed Item Description"));
 		uploadFileColList.add(new XCDbl(10,"Total Cost"));
 		uploadFileColList.add(new XCDbl(11,"Net Book Value"));
-		uploadFileColList.add(new XCTime(12,"Invoice Date"));
+		uploadFileColList.add(new XCStr(12,"Invoice Date"));
 		uploadFileColList.add(new XCStr(13,"PO / BR No."));
 		uploadFileColList.add(new XCStr(14,"Region"));
 		uploadFileColList.add(new XCStr(15,"Not UST Property"));
@@ -508,7 +499,7 @@ public class StocktakeEventHandler implements StocktakeService{
 		uploadFileColList.add(new XCStr(18,"Voucher ID"));
 		uploadFileColList.add(new XCStr(19,"Invoice ID"));
 		
-		
+		// read data from excel
 		ArrayList<HashMap<String, Object>> data = new ArrayList<HashMap<String, Object>>();
 		
 		if(outputFileName.toLowerCase().endsWith(".xls")) {
@@ -643,20 +634,19 @@ public class StocktakeEventHandler implements StocktakeService{
 //        reponseList.add(data2);
 //        reponseList.add(data3);
 		
-//		log.info(data.get(2).toString());
 		return data;
 		
 	}
 	//list<fasstkdtlstgdao>
 	private void validateUploadData(ArrayList<HashMap<String, Object>> uploadFileData, List<CommonJson> excelErrorList, List<FasStkPlanDtlStgDAO> fasStkPlanDtlStgDAOList, String stkPlanId, String opPageName) throws ErrorDataArrayException {
 		
+		// check header format
 		HashMap<String, Object> headerList = uploadFileData.get(0);
-		if (headerList.get("Exist").equals("Exist") && 
-			headerList.get("Not Exist").equals("Not Exist") &&
-			headerList.get("Yet-to-be Located").equals("Yet-to-be Located") &&
-			headerList.get("Business Unit").equals("Business Unit") && 
-			headerList.get("Asset ID").equals( "Asset ID")) {
-			String currentUser = "isod01";
+		if (headerList.get("Exist").equals(AppConstants.XLS_HDR_EXIST) && 
+			headerList.get("Not Exist").equals(AppConstants.XLS_HDR_NOT_EXIST) &&
+			headerList.get("Yet-to-be Located").equals(AppConstants.XLS_HDR_YET_TO_BE_LOCATED) &&
+			headerList.get("Business Unit").equals(AppConstants.XLS_HDR_BUSINESS_UNIT) && 
+			headerList.get("Asset ID").equals( AppConstants.XLS_HDR_ASSET_ID)) {
 			for (int i = 1; i < uploadFileData.size() ;i++) {
 				try {
 					HashMap<String,Object> datarow = uploadFileData.get(i);
@@ -667,14 +657,13 @@ public class StocktakeEventHandler implements StocktakeService{
 					excelErrorList.add(errormsg);
 				}
 				
-				String Exist =  GeneralUtil.initBlankString((String) datarow.get("Exist")).trim();
-				String Yet_to_be_Located =  GeneralUtil.initBlankString((String)datarow.get("Yet-to-be Located")).trim();
-				String Not_Exist =  GeneralUtil.initBlankString((String)datarow.get("Not Exist")).trim();
+				String Exist =  GeneralUtil.initBlankString((String) datarow.get("Exist")).trim().toUpperCase();
+				String Yet_to_be_Located =  GeneralUtil.initBlankString((String)datarow.get("Yet-to-be Located")).trim().toUpperCase();
+				String Not_Exist =  GeneralUtil.initBlankString((String)datarow.get("Not Exist")).trim().toUpperCase();
 				String Business_Unit = GeneralUtil.initBlankString((String)(datarow.get("Business Unit"))).trim();
 				String Asset_ID = GeneralUtil.initBlankString((String)(datarow.get("Asset ID"))).trim();
-				String modCtrlTxt = GeneralUtil.genModCtrlTxt();
-				Timestamp currentTimestamp = GeneralUtil.getCurrentTimestamp();
 				
+				// check exist, not exist yet-to-be located field
 				int Y = 0;
 				if (!(Exist.equals("Y")||Exist.equals("")||Exist.equals("N")) ){
 					CommonJson errormsg = new CommonJson();
@@ -709,6 +698,7 @@ public class StocktakeEventHandler implements StocktakeService{
 					errormsg.set("errorMsg", "this row have more than one 'Y' ");
 					excelErrorList.add(errormsg);
 				}
+				//check business unit
 				if (Business_Unit == null|| Business_Unit.toString().isBlank()) {
 					CommonJson errormsg = new CommonJson();
 					errormsg.set("rowNumber", i);
@@ -716,6 +706,7 @@ public class StocktakeEventHandler implements StocktakeService{
 					errormsg.set("errorMsg", "Business Unit is blank or not exist ");
 					excelErrorList.add(errormsg);
 				}
+				//check asset id
 				if (Asset_ID == null || Asset_ID.toString().isBlank()) {
 					CommonJson errormsg = new CommonJson();
 					errormsg.set("rowNumber", i);
@@ -727,12 +718,10 @@ public class StocktakeEventHandler implements StocktakeService{
 				fasStkPlanDtlDAOPK.setAssetId(Asset_ID);
 				fasStkPlanDtlDAOPK.setBusinessUnit(Business_Unit);
 				fasStkPlanDtlDAOPK.setStkPlanId(stkPlanId.trim());
-				log.info(Asset_ID);
-				log.info(Business_Unit);
-				log.info(stkPlanId);
 				
 				FasStkPlanDtlDAO stkPlanDtlDAO = stkPlanDtlRepository.findOne(fasStkPlanDtlDAOPK);
 				
+				//create staging dao only if that row of excel data exist in stk_plan_dtl
 				if (stkPlanDtlDAO == null) {
 					CommonJson errormsg = new CommonJson();
 					errormsg.set("rowNumber", i);
@@ -754,12 +743,7 @@ public class StocktakeEventHandler implements StocktakeService{
 					FasStkPlanDtlStgDAO FfasStkPlanDtlStgDAO = new FasStkPlanDtlStgDAO(stkPlanDtlDAO, StkStatus);
 					fasStkPlanDtlStgDAOList.add(FfasStkPlanDtlStgDAO);
 				}
-				// fasdao variable = repo find one
-				// if null = action
-				// else create stgdao and to list
-				
-//				
-//				
+	
 //				FasStkPlanDtlStgDAOPK fasStkPlanDtlStgDAOPK = new FasStkPlanDtlStgDAOPK();
 //				FasStkPlanDtlStgDAO FfasStkPlanDtlStgDAO = new FasStkPlanDtlStgDAO();
 //				
@@ -791,16 +775,7 @@ public class StocktakeEventHandler implements StocktakeService{
 				
 //				fasStkPlanDtlStgDAOList.add(FfasStkPlanDtlStgDAO);
 				
-				
-				
-				// create daopk
-				//daopk = id
-				//create dao from daopk
-				//add to list
-				// check dao type, if value null
-				// GeneralUtil
-				
-				
+			
 				}catch(Exception e) {
 					log.info(e.getMessage());
 				}
